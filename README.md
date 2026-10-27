@@ -97,6 +97,33 @@ Two things worth knowing:
 - If `sheetScriptUrl` is empty, the page falls back to the sample `invitees[]`
   list in the data file.
 
+### The guest directory
+
+The Guests page is **not** edited by hand. It fetches
+`sheetScriptUrl + "?directory=1"` on load, and the Apps Script returns only the
+guests who ticked *Add me to the guest list*, and only their name, side, phone
+and email. Everything else — meals, dietary needs, song requests, notes — stays
+in the spreadsheet.
+
+This is deliberate: pasting guests' phone numbers into `wedding-data.js` would
+commit them to a public repo forever, git history included. Keeping them in the
+sheet means you can correct or remove someone and the page follows.
+
+What that page shows is **public to anyone with the URL**, which is what a
+shared contact list is for, but it's why the opt-in checkbox exists and why
+nobody is listed without ticking it.
+
+On the RSVP, phone and email are asked **per person**, so a couple replying
+together don't end up sharing one number. "Side" is asked once for the party.
+
+> **After editing `rsvp-apps-script.gs` you must redeploy it**, or the Guests
+> page keeps showing "coming soon": Apps Script → Deploy → Manage deployments →
+> edit → **New version** → Deploy. The `/exec` URL doesn't change.
+>
+> Until that redeploy happens the old script ignores `?directory=1`, the page
+> gets no `guests` key back, and it falls back to the "coming soon" panel. That
+> is the expected behaviour, not a bug.
+
 ### Still to test
 
 The lookup has been checked end to end against the live sheet (it returns the
@@ -142,7 +169,11 @@ replies have any em or en dashes stripped, and markdown links like
 - [ ] **Nik's story copy** on `/story/` is a stub.
 - [ ] **Tracht rental link** on `/wear/` is `#RENT-LINK-PLACEHOLDER`.
 - [ ] **Room-block codes and final booking links** on `/stay/`.
-- [ ] **Send one test RSVP** (see above).
+- [ ] **Redeploy the Apps Script** with the current `server/rsvp-apps-script.gs`
+      (Deploy → Manage deployments → edit → New version). The Guests page stays
+      on "coming soon" until you do.
+- [ ] **Send one test RSVP** (see above), with the guest-list box ticked, and
+      confirm the person appears on `/guests/`. Then delete the row.
 - [ ] Decide whether to deploy the Daisy proxy.
 
 ---

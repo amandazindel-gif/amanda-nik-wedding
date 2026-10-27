@@ -32,6 +32,8 @@ const notFoundBox = $("[data-not-found]");
 const listStatus = $("[data-list-status]");
 const peopleBox = $("[data-people]");
 const rsvpForm = $("[data-rsvp-form]");
+const shareBox = $("[data-share]");
+const shareFields = $$("[data-share-fields]");
 const sendError = $("[data-send-error]");
 
 let sheetList = null;
@@ -90,6 +92,8 @@ function blankPerson(name, opts = {}) {
     wedding: true,
     meal: MEALS[0].id,
     diet: "",
+    phone: "",
+    email: "",
     isPlusOne: !!opts.isPlusOne,
     needsName: !!opts.needsName
   };
@@ -132,6 +136,19 @@ function personCard(p, i) {
         <input type="text" data-field="diet" placeholder="Nut allergy, gluten free, no pork">
       </label>
     </div>
+    <div class="person__contact" data-contact hidden>
+      <p class="person__contact-label">Contact details for the guest list</p>
+      <div class="person__meal">
+        <label class="field">
+          <span>Phone</span>
+          <input type="tel" data-field="phone" placeholder="+1 555 123 4567" autocomplete="tel">
+        </label>
+        <label class="field">
+          <span>Email</span>
+          <input type="email" data-field="email" placeholder="you@example.com" autocomplete="email">
+        </label>
+      </div>
+    </div>
     <p class="person__regrets" data-regrets hidden>Not coming to either. We'll miss you, and we'll drink one for you.</p>
   </div>`;
 }
@@ -147,8 +164,14 @@ function syncPersonUi(card, p) {
   const attending = p.welcome || p.wedding;
   card.querySelector("[data-attending]").hidden = !attending;
   card.querySelector("[data-regrets]").hidden = attending;
+  // Contact details are only for people who are coming and who opted in.
+  card.querySelector("[data-contact]").hidden = !(attending && shareBox && shareBox.checked);
   card.querySelector("[data-person-heading]").textContent =
     p.name || (p.isPlusOne ? "Your plus one" : "Guest");
+}
+
+function syncAllPersonUi() {
+  $$("[data-person]", peopleBox).forEach((card) => syncPersonUi(card, state.people[Number(card.dataset.person)]));
 }
 
 function renderParty() {
@@ -242,10 +265,11 @@ lookupForm.addEventListener("submit", async (e) => {
 });
 
 /* --------------------------------------------------------------- share --- */
-const shareBox = $("[data-share]");
-const shareFields = $("[data-share-fields]");
-if (shareBox && shareFields) {
-  shareBox.addEventListener("change", () => { shareFields.hidden = !shareBox.checked; });
+if (shareBox) {
+  shareBox.addEventListener("change", () => {
+    shareFields.forEach((el) => { el.hidden = !shareBox.checked; });
+    syncAllPersonUi();
+  });
 }
 
 /* -------------------------------------------------------------- submit --- */
@@ -257,18 +281,23 @@ rsvpForm.addEventListener("submit", async (e) => {
   const payload = {
     partyId: state.partyId,
     shareContact: share,
-    phone: share ? $("[data-phone]").value : "",
-    email: share ? $("[data-email]").value : "",
+    side: share ? $("[data-side]").value : "",
     song: $("[data-song]").value,
     notes: $("[data-notes]").value,
-    guests: state.people.map((p) => ({
-      name: p.name,
-      isPlusOne: p.isPlusOne,
-      welcomeParty: p.welcome,
-      weddingDay: p.wedding,
-      meal: p.welcome || p.wedding ? p.meal : null,
-      dietary: p.diet
-    }))
+    guests: state.people.map((p) => {
+      const attending = p.welcome || p.wedding;
+      return {
+        name: p.name,
+        isPlusOne: p.isPlusOne,
+        welcomeParty: p.welcome,
+        weddingDay: p.wedding,
+        meal: attending ? p.meal : null,
+        dietary: p.diet,
+        // Only opted-in, attending guests reach the shared directory.
+        phone: share && attending ? p.phone : "",
+        email: share && attending ? p.email : ""
+      };
+    })
   };
 
   const finish = () => {
@@ -335,7 +364,10 @@ $$("[data-reset]").forEach((btn) =>
     state = { partyId: null, people: [], sending: false };
     lookupForm.reset();
     hideNotices();
-    if (shareBox) { shareBox.checked = false; shareFields.hidden = true; }
+    if (shareBox) {
+      shareBox.checked = false;
+      shareFields.forEach((el) => { el.hidden = true; });
+    }
     rsvpForm.querySelectorAll("input[type=text], input[type=tel], input[type=email], textarea").forEach((i) => (i.value = ""));
     show("lookup");
   })

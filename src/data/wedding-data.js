@@ -159,8 +159,12 @@ export const wedding = {
     { kind: "Day trip", name: "Eibsee & Garmisch", photo: "assets/explore-garmisch-kiss.jpg", photoAlt: "Amanda and Nik kissing on a mountain lookout high above Garmisch-Partenkirchen", gallery: [{ src: "assets/explore-eibsee.jpg", alt: "Amanda and Nik on the turquoise shore of the Eibsee under the Zugspitze" }, { src: "assets/explore-garmisch-terrace.jpg", alt: "A sunny mountain-restaurant terrace with red tables facing the Wetterstein range" }, { src: "assets/explore-garmisch-hut.jpg", alt: "A Bavarian flag flying over a hut terrace, forest and Karwendel peaks beyond" }], desc: "About 90 minutes west. The impossibly turquoise Eibsee under the Zugspitze, then a cable car above Garmisch for lunch with a view.", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Eibsee" }
   ],
 
-  /* GUEST DIRECTORY — PLACEHOLDER. Add one entry per guest who opted in on their RSVP.
-     Leave empty and the page shows the "coming soon" note instead.
+  /* GUEST DIRECTORY
+     Normally leave this empty. The Guests page fetches the real directory from
+     the RSVP sheet at runtime (sheetScriptUrl + "?directory=1"), so contact
+     details stay in the spreadsheet and never get committed to this repo.
+     Anything listed here is rendered as a seed and replaced once that fetch
+     lands; it is only useful for a guest who can't use the RSVP form.
      { name: "Jane Doe", side: "Amanda's side", phone: "+1 303 555 0134", email: "jane@example.com" } */
   guests: [],
 

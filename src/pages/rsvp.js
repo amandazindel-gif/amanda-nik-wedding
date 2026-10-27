@@ -58,14 +58,16 @@ export default function rsvp(W) {
           </label>
           <div class="share-fields" data-share-fields hidden>
             <label class="field">
-              <span>Phone</span>
-              <input type="tel" data-phone placeholder="+1 555 123 4567" autocomplete="tel">
-            </label>
-            <label class="field">
-              <span>Email</span>
-              <input type="email" data-email placeholder="you@example.com" autocomplete="email">
+              <span>Whose side are you on? (we won't tell)</span>
+              <select data-side>
+                <option value="">Prefer not to say</option>
+                <option value="Amanda's side">Amanda's side</option>
+                <option value="Nik's side">Nik's side</option>
+                <option value="Both">Both</option>
+              </select>
             </label>
           </div>
+          <p class="share-note" data-share-fields hidden>Add a phone number or email for each person above, and they'll show up on the <a href="${url("/guests/")}">Guests page</a> for other guests to find.</p>
           <label class="field">
             <span>Request your favorite song, or a song that reminds you of us.</span>
             <input type="text" data-song placeholder="Artist, Title">

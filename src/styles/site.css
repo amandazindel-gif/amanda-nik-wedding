@@ -2251,6 +2251,17 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
 .person__meal[hidden] { display: none; }
 .person__regrets { margin: 0; font-size: 15px; line-height: 1.55; color: var(--faint); }
 .person__regrets[hidden] { display: none; }
+.person__contact { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line-22); }
+.person__contact-label {
+  margin: 0 0 10px;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sage);
+}
+.share-note { margin: 0; font-size: 14px; line-height: 1.55; color: var(--muted); }
 .rsvp-extras {
   background: var(--paper);
   border: 1px solid var(--line-16);
