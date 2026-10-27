@@ -35,6 +35,7 @@ const rsvpForm = $("[data-rsvp-form]");
 const sendError = $("[data-send-error]");
 
 let sheetList = null;
+let listReady = Promise.resolve();
 let state = { partyId: null, people: [], sending: false };
 
 function show(stage) {
@@ -49,7 +50,7 @@ function list() {
 /* ------------------------------------------------- load the guest list --- */
 if (CFG.sheetScriptUrl) {
   if (listStatus) listStatus.textContent = "Loading the guest list…";
-  fetch(CFG.sheetScriptUrl)
+  listReady = fetch(CFG.sheetScriptUrl)
     .then((r) => r.json())
     .then((j) => {
       if (Array.isArray(j.invitees)) sheetList = j.invitees;
@@ -185,7 +186,7 @@ function hideNotices() {
 
 lookupForm.addEventListener("input", hideNotices);
 
-lookupForm.addEventListener("submit", (e) => {
+lookupForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   hideNotices();
   const first = lookupForm.elements.first.value;
@@ -195,6 +196,20 @@ lookupForm.addEventListener("submit", (e) => {
   if (norm(query).split(" ").filter(Boolean).length < 2) {
     needFullName.hidden = false;
     return;
+  }
+
+  // The sheet takes a second or two to wake up. Searching before it answers
+  // would check the three-name sample list and wrongly tell a real guest they
+  // aren't invited, so wait for it.
+  const submit = lookupForm.querySelector('button[type="submit"]');
+  if (submit) {
+    submit.disabled = true;
+    submit.textContent = "Looking…";
+  }
+  await listReady;
+  if (submit) {
+    submit.disabled = false;
+    submit.textContent = "Find me";
   }
 
   const r = match(query);
