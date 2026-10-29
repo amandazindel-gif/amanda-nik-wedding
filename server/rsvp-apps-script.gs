@@ -80,6 +80,9 @@ function rsvpSheet_() {
   const have = headers.map(h => String(h).toLowerCase().trim());
   const missing = RSVP_HEADERS.filter(h => have.indexOf(h.toLowerCase()) < 0);
   if (missing.length) sh.getRange(1, headers.length + 1, 1, missing.length).setValues([missing]);
+  // Keep "+1 630 303 4619" a string rather than letting Sheets make it a number.
+  const phoneCol = have.indexOf("phone");
+  if (phoneCol >= 0) sh.getRange(1, phoneCol + 1, sh.getMaxRows(), 1).setNumberFormat("@");
   return sh;
 }
 
@@ -144,6 +147,9 @@ function directorySheet_() {
     sh.setColumnWidth(1, 200);
     sh.setColumnWidth(4, 240);
   }
+  // Sheets reads "+16303034619" as a number and throws away the formatting,
+  // so the Phone column is pinned to plain text.
+  sh.getRange(1, 3, sh.getMaxRows(), 1).setNumberFormat("@");
   return sh;
 }
 

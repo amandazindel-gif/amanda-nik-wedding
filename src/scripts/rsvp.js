@@ -136,19 +136,6 @@ function personCard(p, i) {
         <input type="text" data-field="diet" placeholder="Nut allergy, gluten free, no pork">
       </label>
     </div>
-    <div class="person__contact" data-contact hidden>
-      <p class="person__contact-label">Contact details for the guest list</p>
-      <div class="person__meal">
-        <label class="field">
-          <span>Phone</span>
-          <input type="tel" data-field="phone" placeholder="+1 555 123 4567" autocomplete="tel">
-        </label>
-        <label class="field">
-          <span>Email</span>
-          <input type="email" data-field="email" placeholder="you@example.com" autocomplete="email">
-        </label>
-      </div>
-    </div>
     <p class="person__regrets" data-regrets hidden>Not coming to either. We'll miss you, and we'll drink one for you.</p>
   </div>`;
 }
@@ -164,14 +151,57 @@ function syncPersonUi(card, p) {
   const attending = p.welcome || p.wedding;
   card.querySelector("[data-attending]").hidden = !attending;
   card.querySelector("[data-regrets]").hidden = attending;
-  // Contact details are only for people who are coming and who opted in.
-  card.querySelector("[data-contact]").hidden = !(attending && shareBox && shareBox.checked);
   card.querySelector("[data-person-heading]").textContent =
     p.name || (p.isPlusOne ? "Your plus one" : "Guest");
 }
 
 function syncAllPersonUi() {
   $$("[data-person]", peopleBox).forEach((card) => syncPersonUi(card, state.people[Number(card.dataset.person)]));
+}
+
+/* Contact details sit directly under the "add me to the guest list" box, so
+   they're where you're looking when you tick it. One pair per person who is
+   actually coming. Values live in state, so re-rendering never loses a keystroke. */
+function renderShareContacts() {
+  const host = $("[data-share-people]");
+  if (!host) return;
+  host.textContent = "";
+
+  state.people.forEach((p, i) => {
+    if (!(p.welcome || p.wedding)) return;
+
+    const group = document.createElement("div");
+    group.className = "share-person";
+
+    const label = document.createElement("p");
+    label.className = "share-person__name";
+    label.textContent = p.name || (p.isPlusOne ? "Your plus one" : "Guest");
+    group.appendChild(label);
+
+    const fields = document.createElement("div");
+    fields.className = "share-fields";
+
+    [
+      { key: "phone", type: "tel", label: "Phone", placeholder: "+1 555 123 4567", autocomplete: "tel" },
+      { key: "email", type: "email", label: "Email", placeholder: "you@example.com", autocomplete: "email" }
+    ].forEach((f) => {
+      const wrap = document.createElement("label");
+      wrap.className = "field";
+      const span = document.createElement("span");
+      span.textContent = f.label;
+      const input = document.createElement("input");
+      input.type = f.type;
+      input.placeholder = f.placeholder;
+      input.autocomplete = f.autocomplete;
+      input.value = p[f.key] || "";
+      input.addEventListener("input", () => { state.people[i][f.key] = input.value; });
+      wrap.append(span, input);
+      fields.appendChild(wrap);
+    });
+
+    group.appendChild(fields);
+    host.appendChild(group);
+  });
 }
 
 function renderParty() {
@@ -186,9 +216,13 @@ function renderParty() {
       if (!field) return;
       p[field] = e.target.type === "checkbox" ? e.target.checked : e.target.value;
       syncPersonUi(card, p);
+      // Attendance or a name change alters who needs contact fields.
+      if (field === "welcome" || field === "wedding" || field === "name") renderShareContacts();
     });
     syncPersonUi(card, p);
   });
+
+  renderShareContacts();
 }
 
 function openParty(party) {
@@ -268,7 +302,12 @@ lookupForm.addEventListener("submit", async (e) => {
 if (shareBox) {
   shareBox.addEventListener("change", () => {
     shareFields.forEach((el) => { el.hidden = !shareBox.checked; });
-    syncAllPersonUi();
+    renderShareContacts();
+    // Bring the newly revealed fields into view; they're easy to miss otherwise.
+    if (shareBox.checked) {
+      const host = $("[data-share-people]");
+      if (host) host.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
   });
 }
 

@@ -1,18 +1,17 @@
 import { esc, url } from "../components/util.js";
 
 /* Guests who opted in live in the RSVP spreadsheet, not in this repo, so the
-   directory is fetched at runtime. Anything in `guests` in the data file is
-   rendered server-side as a seed and replaced once the fetch lands. */
-export function guestCard(g) {
+   table is filled at runtime from the "Guest list" tab. Anything in `guests`
+   in the data file is rendered server-side as a seed and replaced once the
+   fetch lands. */
+export function guestRow(g) {
   return `
-          <div class="guest-card">
-            <p class="guest-card__name">${esc(g.name)}</p>
-            ${g.side ? `<p class="guest-card__side">${esc(g.side)}</p>` : ""}
-            <div class="guest-card__links">
-              ${g.phone ? `<a href="tel:${esc(String(g.phone).replace(/[^+0-9]/g, ""))}">${esc(g.phone)}</a>` : ""}
-              ${g.email ? `<a href="mailto:${esc(g.email)}">${esc(g.email)}</a>` : ""}
-            </div>
-          </div>`;
+            <tr>
+              <th scope="row">${esc(g.name)}</th>
+              <td>${esc(g.side || "")}</td>
+              <td>${g.phone ? `<a href="tel:${esc(String(g.phone).replace(/[^+0-9]/g, ""))}">${esc(g.phone)}</a>` : ""}</td>
+              <td>${g.email ? `<a href="mailto:${esc(g.email)}">${esc(g.email)}</a>` : ""}</td>
+            </tr>`;
 }
 
 export default function guests(W) {
@@ -21,18 +20,38 @@ export default function guests(W) {
   const body = `
 <main>
   <section class="section section--last">
-    <div style="max-width:900px;margin:0 auto">
+    <div style="max-width:1000px;margin:0 auto">
       <div class="page-head" style="margin-bottom:26px">
         <p class="eyebrow">Who's coming</p>
         <h1>The little black book</h1>
         <p style="max-width:54ch;color:var(--nav-link);text-wrap:pretty">A shared contact list, so you can round people up for breakfast, split a taxi from the station, or find out who else is on your flight.</p>
       </div>
 
-      <p class="result-count" data-guest-count aria-live="polite" ${seed.length ? "" : "hidden"}>${
-        seed.length ? `${seed.length} ${seed.length === 1 ? "guest" : "guests"}` : ""
-      }</p>
-
-      <div class="guest-grid" data-guest-grid ${seed.length ? "" : "hidden"}>${seed.map(guestCard).join("")}
+      <div class="guest-table-wrap" data-guest-table ${seed.length ? "" : "hidden"}>
+        <div class="guest-table__bar">
+          <p class="result-count" data-guest-count aria-live="polite" style="margin:0">${
+            seed.length ? `${seed.length} ${seed.length === 1 ? "guest" : "guests"}` : ""
+          }</p>
+          <label class="guest-table__search">
+            <span class="visually-hidden">Filter the guest list</span>
+            <input type="search" data-guest-filter placeholder="Filter by name…" autocomplete="off">
+          </label>
+        </div>
+        <div class="guest-table__scroll">
+          <table class="guest-table">
+            <thead>
+              <tr>
+                <th scope="col"><button type="button" data-sort="name" aria-label="Sort by name">Name</button></th>
+                <th scope="col"><button type="button" data-sort="side" aria-label="Sort by side">Side</button></th>
+                <th scope="col">Phone</th>
+                <th scope="col">Email</th>
+              </tr>
+            </thead>
+            <tbody data-guest-body>${seed.map(guestRow).join("")}
+            </tbody>
+          </table>
+        </div>
+        <p class="guest-table__none" data-guest-none hidden>No one matches that.</p>
       </div>
 
       <div class="guests-empty" data-guest-loading ${seed.length ? "hidden" : ""}>

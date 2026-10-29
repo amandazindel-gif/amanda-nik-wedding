@@ -56,7 +56,8 @@ export default function rsvp(W) {
             <input type="checkbox" data-share>
             <span><strong>Add me to the guest list</strong><small>Share your phone and email with other guests so you can coordinate travel and plans.</small></span>
           </label>
-          <div class="share-fields" data-share-fields hidden>
+          <div class="share-fields-block" data-share-fields hidden>
+            <p class="share-note">Add a phone number or email for each person, and they'll appear on the <a href="${url("/guests/")}">Guests page</a> for other guests to find. Either one is enough.</p>
             <label class="field">
               <span>Whose side are you on? (we won't tell)</span>
               <select data-side>
@@ -66,8 +67,8 @@ export default function rsvp(W) {
                 <option value="Both">Both</option>
               </select>
             </label>
+            <div data-share-people></div>
           </div>
-          <p class="share-note" data-share-fields hidden>Add a phone number or email for each person above, and they'll show up on the <a href="${url("/guests/")}">Guests page</a> for other guests to find.</p>
           <label class="field">
             <span>Request your favorite song, or a song that reminds you of us.</span>
             <input type="text" data-song placeholder="Artist, Title">
