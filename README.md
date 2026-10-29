@@ -99,11 +99,34 @@ Two things worth knowing:
 
 ### The guest directory
 
-The Guests page is **not** edited by hand. It fetches
-`sheetScriptUrl + "?directory=1"` on load, and the Apps Script returns only the
-guests who ticked *Add me to the guest list*, and only their name, side, phone
-and email. Everything else — meals, dietary needs, song requests, notes — stays
-in the spreadsheet.
+The Guests page is **not** edited in this repo. It fetches
+`sheetScriptUrl + "?directory=1"` on load, and the Apps Script returns the
+**Guest list** tab of the spreadsheet — name, side, phone and email, for the
+rows marked *Show on website*. Everything else — meals, dietary needs, song
+requests, notes — stays in the sheet.
+
+The script owns two tabs:
+
+| Tab | What it is |
+|---|---|
+| **RSVPs** | Every reply as it came in, one row per guest. An append-only log; don't edit it. |
+| **Guest list** | The shared contact list, one row per person. **Safe to edit.** |
+
+`Guest list` is the one the website reads, so what you type there is what
+guests see. Tidy a phone number, fix a spelling, or set **Show on website** to
+`No` to hide someone. The script updates a person's row when they RSVP, matched
+on name, so nobody gets duplicated.
+
+Two rules worth knowing:
+
+- **The guest's own latest choice wins.** A `No` you set by hand holds until
+  that person RSVPs again — so someone who opts out and later changes their
+  mind reappears, as they should.
+- **Blank fields don't overwrite.** Someone re-replying to change a meal won't
+  wipe the number they gave you last time.
+
+**Sheet menu → Wedding site → Rebuild guest list from RSVPs** rebuilds the tab
+from the log. Use it the first time, or if the tab ever drifts.
 
 This is deliberate: pasting guests' phone numbers into `wedding-data.js` would
 commit them to a public repo forever, git history included. Keeping them in the

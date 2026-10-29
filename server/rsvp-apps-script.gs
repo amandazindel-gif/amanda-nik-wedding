@@ -14,13 +14,21 @@
  * What it does
  *  GET              → returns ONLY names + plus-one info for the RSVP lookup.
  *                     Phone, address and reception details never leave the sheet.
- *  GET ?directory=1 → returns name, side, phone and email for the guests who
- *                     ticked "add me to the guest list", and nobody else. This
- *                     feeds the Guests page. Anyone who can open the website can
- *                     read it, which is the point of a shared contact list, but
- *                     it is why only opted-in guests are ever included.
- *  POST             → appends one row per guest to a tab called "RSVPs"
- *                     (created automatically).
+ *  GET ?directory=1 → returns the "Guest list" tab: name, side, phone and email
+ *                     for the rows marked "Show on website". This feeds the
+ *                     Guests page. Anyone who can open the website can read it,
+ *                     which is the point of a shared contact list, but it is
+ *                     why only opted-in guests are ever included.
+ *  POST             → appends one row per guest to the "RSVPs" tab (the full
+ *                     log) and updates that guest's row on "Guest list".
+ *                     Both tabs are created automatically.
+ *
+ * Tabs this script owns
+ *  RSVPs       every reply as it came in, one row per guest. Never edited.
+ *  Guest list  the shared contact list, one row per person. Safe to edit:
+ *              tidy a number, or set "Show on website" to No to hide someone
+ *              (that holds until they RSVP again, since their own choice wins).
+ *              Sheet menu → Wedding site → Rebuild guest list from RSVPs.
  *
  * Parties: guests who share the same address are grouped into one invitation,
  * so one person can RSVP for their whole household.
@@ -28,6 +36,7 @@
 
 const GUEST_TAB_GID = 1473395423;   // the tab from your link (#gid=...)
 const RSVP_TAB_NAME = "RSVPs";
+const DIRECTORY_TAB_NAME = "Guest list";
 
 function guestSheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -114,17 +123,79 @@ function doGet(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/**
- * The shared contact list behind the Guests page.
- * Only guests who ticked the box are included, and only ever name, side, phone
- * and email. Meals, dietary needs, songs and notes stay in the sheet.
- * If someone replies twice, their most recent submission wins.
- */
-function directory_() {
+/* ===========================================================================
+   THE "Guest list" TAB
+   The shared contact list the website shows. The script keeps it up to date as
+   RSVPs arrive, and you can edit it by hand: fix a typo, tidy a phone number,
+   or set "Show on website" to No to hide someone without deleting them.
+   It is what the website reads, so your edits are what guests see.
+   A guest who RSVPs again overwrites their own row, nothing else.
+   =========================================================================== */
+const DIRECTORY_HEADERS = ["Name", "Side", "Phone", "Email", "Show on website", "Updated"];
+
+function directorySheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sh = ss.getSheetByName(RSVP_TAB_NAME);
-  const out = { guests: [] };
-  if (!sh || sh.getLastRow() < 2) return jsonOut_(out);
+  let sh = ss.getSheetByName(DIRECTORY_TAB_NAME);
+  if (!sh) {
+    sh = ss.insertSheet(DIRECTORY_TAB_NAME);
+    sh.appendRow(DIRECTORY_HEADERS);
+    sh.setFrozenRows(1);
+    sh.getRange(1, 1, 1, DIRECTORY_HEADERS.length).setFontWeight("bold");
+    sh.setColumnWidth(1, 200);
+    sh.setColumnWidth(4, 240);
+  }
+  return sh;
+}
+
+/**
+ * Add or update one row per guest, matched on name.
+ * entries: [{ name, side, phone, email, show }]
+ */
+function upsertDirectory_(entries) {
+  if (!entries.length) return 0;
+  const sh = directorySheet_();
+  const last = sh.getLastRow();
+  const width = DIRECTORY_HEADERS.length;
+  const rows = last > 1 ? sh.getRange(2, 1, last - 1, width).getValues() : [];
+
+  const index = {};
+  rows.forEach((r, i) => {
+    const k = String(r[0] || "").trim().toLowerCase();
+    if (k) index[k] = i;
+  });
+
+  const now = new Date();
+  const appends = [];
+  entries.forEach(e => {
+    const name = String(e.name || "").trim();
+    const key = name.toLowerCase();
+    if (!key) return;
+
+    if (key in index) {
+      const r = rows[index[key]];
+      // Only overwrite what the guest actually sent. Someone re-replying to
+      // change a meal shouldn't wipe the number they gave us last time.
+      if (e.side) r[1] = e.side;
+      if (e.phone) r[2] = e.phone;
+      if (e.email) r[3] = e.email;
+      // The guest's own latest choice decides this, so opting out and back in
+      // works. A No you set by hand holds until that guest replies again.
+      r[4] = e.show ? "Yes" : "No";
+      r[5] = now;
+    } else {
+      appends.push([name, e.side || "", e.phone || "", e.email || "", e.show ? "Yes" : "No", now]);
+    }
+  });
+
+  if (rows.length) sh.getRange(2, 1, rows.length, width).setValues(rows);
+  if (appends.length) sh.getRange(sh.getLastRow() + 1, 1, appends.length, width).setValues(appends);
+  return entries.length;
+}
+
+/* Every guest's most recent RSVP, as directory entries. */
+function latestFromRsvps_() {
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(RSVP_TAB_NAME);
+  if (!sh || sh.getLastRow() < 2) return [];
 
   const all = sh.getDataRange().getValues();
   const headers = all[0];
@@ -136,11 +207,10 @@ function directory_() {
     phone: col_(headers, ["phone"]),
     email: col_(headers, ["email"])
   };
-  if (c.name < 0 || c.share < 0) return jsonOut_(out);
+  if (c.name < 0) return [];
 
   const latest = {};
   all.slice(1).forEach(r => {
-    if (!YES.test(String(r[c.share] || "").trim())) return;
     const name = String(r[c.name] || "").trim();
     if (!name) return;
     const key = name.toLowerCase();
@@ -148,20 +218,65 @@ function directory_() {
     if (latest[key] && latest[key].when > when) return;
     latest[key] = {
       when: when,
-      guest: {
+      entry: {
         name: name,
         side: c.side >= 0 ? String(r[c.side] || "").trim() : "",
         phone: c.phone >= 0 ? String(r[c.phone] || "").trim() : "",
-        email: c.email >= 0 ? String(r[c.email] || "").trim() : ""
+        email: c.email >= 0 ? String(r[c.email] || "").trim() : "",
+        show: c.share >= 0 ? YES.test(String(r[c.share] || "").trim()) : false
       }
     };
   });
+  return Object.keys(latest).map(k => latest[k].entry);
+}
 
-  out.guests = Object.keys(latest)
-    .map(k => latest[k].guest)
-    .filter(g => g.phone || g.email)
+/** What the website's Guests page reads. Only rows marked Show on website. */
+function directory_() {
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(DIRECTORY_TAB_NAME);
+  const out = { guests: [] };
+  if (!sh || sh.getLastRow() < 2) return jsonOut_(out);
+
+  const all = sh.getDataRange().getValues();
+  const headers = all[0];
+  const c = {
+    name: col_(headers, ["name"]),
+    side: col_(headers, ["side"]),
+    phone: col_(headers, ["phone"]),
+    email: col_(headers, ["email"]),
+    show: col_(headers, ["showonwebsite", "show"])
+  };
+  if (c.name < 0) return jsonOut_(out);
+
+  out.guests = all.slice(1)
+    .filter(r => c.show < 0 || YES.test(String(r[c.show] || "").trim()))
+    .map(r => ({
+      name: String(r[c.name] || "").trim(),
+      side: c.side >= 0 ? String(r[c.side] || "").trim() : "",
+      phone: c.phone >= 0 ? String(r[c.phone] || "").trim() : "",
+      email: c.email >= 0 ? String(r[c.email] || "").trim() : ""
+    }))
+    .filter(g => g.name && (g.phone || g.email))
     .sort((a, b) => a.name.localeCompare(b.name));
   return jsonOut_(out);
+}
+
+/* Sheet menu: Wedding site → Rebuild guest list from RSVPs.
+   Use it the first time, or any time the tab drifts from the RSVPs log. */
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu("Wedding site")
+    .addItem("Rebuild guest list from RSVPs", "rebuildDirectory")
+    .addToUi();
+}
+
+function rebuildDirectory() {
+  const n = upsertDirectory_(latestFromRsvps_());
+  SpreadsheetApp.getUi().alert(
+    n
+      ? "Guest list updated from " + n + " RSVP" + (n === 1 ? "" : "s") + ".\n\n" +
+        "Rows you hid stay hidden. The website updates on the next page load."
+      : "No RSVPs to read yet, so nothing changed."
+  );
 }
 
 function jsonOut_(obj) {
@@ -200,6 +315,17 @@ function doPost(e) {
       };
       sh.appendRow(headers.map(h => (h in values ? values[h] : "")));
     });
+
+    // Keep the "Guest list" tab, and so the website, in step with this reply.
+    upsertDirectory_((d.guests || [])
+      .filter(g => String(g.name || "").trim())
+      .map(g => ({
+        name: g.name,
+        side: d.side || "",
+        phone: g.phone || d.phone || "",
+        email: g.email || d.email || "",
+        show: !!d.shareContact && (g.welcomeParty || g.weddingDay)
+      })));
 
     return jsonOut_({ ok: true });
   } finally {
