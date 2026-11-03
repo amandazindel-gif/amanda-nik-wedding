@@ -56,7 +56,9 @@ function eventHtml(ev, dayId, i) {
 }
 
 export default function schedule(W) {
-  const photosFor = (day) => (day.venue.photos === "museum" ? W.museumPhotos : W.venuePhotos);
+  // Each day names the photo set it shows, so adding a day is a data change.
+  const PHOTO_SETS = { museum: W.museumPhotos, venue: W.venuePhotos, recover: W.recoverPhotos };
+  const photosFor = (day) => PHOTO_SETS[day.venue.photos] || W.venuePhotos;
 
   const tabs = W.days
     .map(

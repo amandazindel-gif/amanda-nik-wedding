@@ -72,6 +72,15 @@ export const wedding = {
     { src: "assets/museum-stilts.jpg", alt: "Amanda laughing as she tries a pair of wooden stilts outside the museum barn" }
   ],
 
+  /* Photos for the Friday recovery day, shown on the Schedule page's third tab. */
+  recoverPhotos: [
+    { src: "assets/recover-lake-deck.jpg", alt: "A lakeside deck with blue bean bags and a swim platform over the water, mountains across the Schliersee" },
+    { src: "assets/recover-jetty.jpg", alt: "Nik standing at the end of a wooden jetty looking out over the lake on a bright afternoon" },
+    { src: "assets/recover-pool.jpg", alt: "The lakeside pool with red and cream parasols, loungers lined up along the water" },
+    { src: "assets/recover-overlook.jpg", alt: "Amanda sitting on a wall above the lake in the sunshine, the Schliersee and the mountains behind her" },
+    { src: "assets/recover-bench.jpg", alt: "Someone sitting on a bench under a chestnut tree with a drink, watching the light on the water" }
+  ],
+
   days: [
     {
       id: "wed", weekday: "Wed", dateLabel: "16", short: "Welcome", title: "Welcome party",
@@ -116,11 +125,11 @@ export const wedding = {
       longDate: "Friday, June 18, 2027",
       intro: "A day to recover and relax. Nothing formal planned.",
       venue: {
-        label: "The venue",
-        name: "Stögeralm",
-        blurb: "A family alm above the Schliersee: meadow, long wooden tables, a hut that has seen a lot of dancing.",
-        credit: "Photos: stoegeralm.de",
-        photos: "venue"
+        label: "The slow day",
+        name: "Down by the lake",
+        blurb: "Swim off a dock, sit in the sun, hit the spa, or do nothing at all. We'll be somewhere along the water, so come find us.",
+        credit: "",
+        photos: "recover"
       },
       events: []
     }
