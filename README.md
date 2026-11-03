@@ -199,8 +199,6 @@ replies have any em or en dashes stripped, and markdown links like
       pages are still hotlinked from `stoegeralm.de`. Get permission, then run
       `npm run fetch-venue-photos` and paste the printed paths into
       `venuePhotos` in the data file.
-- [ ] **More museum photos** for the Wednesday carousel (`museumPhotos`).
-      There are two.
 - [ ] **Confirm the ceremony time** in `weddingISO` — the countdown and the
       calendar maths both read it.
 - [ ] **`contactEmail`** is a placeholder.

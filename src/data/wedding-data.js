@@ -61,11 +61,15 @@ export const wedding = {
     { src: "https://www.stoegeralm.de/index_files/vlb_images1/305.jpg", alt: "Evening at the Stögeralm" }
   ],
 
-  /* Photos of the Markus Wasmeier museum, used by the Welcome tab carousel.
-     TODO before launch: add more museum photos here. */
+  /* Photos of the Markus Wasmeier museum. The Schedule page shows these on the
+     Wednesday tab, and venuePhotos on Thursday and Friday. */
   museumPhotos: [
     { src: "assets/explore-museum.jpg", alt: "Historic farmhouses at the Markus Wasmeier Open-Air Museum" },
-    { src: "assets/welcome-wirtshaus.jpg", alt: "The traditional inn at the Markus Wasmeier Open-Air Museum" }
+    { src: "assets/museum-farmhouse.jpg", alt: "A timbered Bavarian farmhouse at the museum, red geraniums along the balcony and a carved wooden water trough out front" },
+    { src: "assets/museum-chapel.jpg", alt: "A small wooden chapel with a bell tower beside the gravel path, mist hanging over the hills behind" },
+    { src: "assets/museum-goats.jpg", alt: "A horned goat looking up from the pasture at the museum, the rest of the herd grazing behind" },
+    { src: "assets/welcome-wirtshaus.jpg", alt: "The traditional inn at the Markus Wasmeier Open-Air Museum" },
+    { src: "assets/museum-stilts.jpg", alt: "Amanda laughing as she tries a pair of wooden stilts outside the museum barn" }
   ],
 
   days: [
