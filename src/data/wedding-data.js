@@ -252,10 +252,10 @@ export const wedding = {
       ],
       dos: ["Dirndls with a blouse", "Lederhosen (vest not required)"],
       donts: ["A cheap costume off Amazon. If you'd rather not buy one when you arrive, you can rent for 50–60 euros. These will be delivered to the hotel."],
-      links: [
-        { label: "Buy", href: "https://www.angermaier.de/" },
-        { label: "Rent", href: "#RENT-LINK-PLACEHOLDER" }  /* PLACEHOLDER · rental partner link */
-      ]
+      /* PLACEHOLDER · shop and rental links to come. Until then the card shows
+         linksNote instead of buttons. */
+      links: [],
+      linksNote: "More info coming soon!"
     },
     {
       id: "alpine",

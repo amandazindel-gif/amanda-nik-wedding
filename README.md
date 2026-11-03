@@ -203,7 +203,9 @@ replies have any em or en dashes stripped, and markdown links like
       calendar maths both read it.
 - [ ] **`contactEmail`** is a placeholder.
 - [ ] **Nik's story copy** on `/story/` is a stub.
-- [ ] **Tracht rental link** on `/wear/` is `#RENT-LINK-PLACEHOLDER`.
+- [ ] **Tracht shop and rental links** on `/wear/`. The card shows
+      "More info coming soon!" until `links` on the tracht dress code has
+      entries; add them and the note is replaced by buttons automatically.
 - [ ] **Room-block codes and final booking links** on `/stay/`.
 - [ ] **Redeploy the Apps Script** with the current `server/rsvp-apps-script.gs`
       (Deploy → Manage deployments → edit → New version). The Guests page stays

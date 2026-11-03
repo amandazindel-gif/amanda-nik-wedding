@@ -57,7 +57,9 @@ function dressCard(dc) {
               ? `<div class="dress-card__links">${dc.links
                   .map((l) => `<a href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.label)}</a>`)
                   .join("")}</div>`
-              : ""
+              : dc.linksNote
+                ? `<p class="dress-card__note">${esc(dc.linksNote)}</p>`
+                : ""
           }
         </div>`;
 }
