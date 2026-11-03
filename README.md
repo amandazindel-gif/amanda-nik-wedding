@@ -47,24 +47,39 @@ No `npm install` needed. Node 18 or newer.
 
 ## Deploying
 
-The site deploys itself. Push to `main` and the
-[Pages workflow](.github/workflows/pages.yml) builds `dist/` and publishes it.
+The site deploys itself from `main`. **Vercel** is the host;
+[`vercel.json`](vercel.json) tells it to run `node build.mjs` and publish
+`dist/`. Every push redeploys, and every branch gets a preview URL.
 
-First time only, in the repository: **Settings → Pages → Build and deployment →
-Source: GitHub Actions**.
+One-time setup, if the project is ever reconnected: vercel.com → **Add New →
+Project** → import `amandazindel-gif/amanda-nik-wedding`. The settings come
+from `vercel.json`, so take the defaults. Make sure Vercel is linked to the
+**amandazindel-gif** GitHub account, not a work one.
 
-The build reads three environment variables, all set for you by the workflow:
+A custom domain goes in **Project → Settings → Domains**; Vercel issues the
+certificate and prints the DNS records to add.
 
-- `BASE_URL` — the path the site is served from. `/` for a user site,
-  `/<repo>/` for a project site. Needed because every link and image is
-  prefixed with it.
-- `SITE_ORIGIN` — used to write `sitemap.xml`.
-- `CNAME` — a custom domain. To use one, add a repository **variable** named
-  `CNAME` (Settings → Secrets and variables → Actions → Variables) set to e.g.
-  `amandaandnik.com`, point the domain's DNS at GitHub Pages, then tick
-  *Enforce HTTPS* under Settings → Pages.
+### Environment variables
 
-To build a project-site copy locally:
+The build reads three, all optional:
+
+- `BASE_URL` — the path the site is served from. Defaults to `/`, which is
+  right for Vercel. GitHub Pages project sites need `/<repo>/`, because every
+  link and image is prefixed with it.
+- `SITE_ORIGIN` — used to write `sitemap.xml`. On Vercel this is derived from
+  `VERCEL_PROJECT_PRODUCTION_URL` automatically.
+- `CNAME` — writes a `CNAME` file. Only needed for GitHub Pages; on Vercel
+  domains are configured in the dashboard.
+
+### The GitHub Pages workflow
+
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) still exists and
+publishes the same build to
+`amandazindel-gif.github.io/amanda-nik-wedding`. Keep one host or the other:
+running both means two live copies that can drift. To retire Pages, delete the
+workflow and set **Settings → Pages → Source: None**.
+
+To build a GitHub Pages copy locally:
 
 ```bash
 BASE_URL=/amanda-nik-wedding/ npm run build

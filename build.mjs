@@ -97,7 +97,10 @@ async function main() {
   );
   await writeFile(join(dist, "404.html"), notFound, "utf8");
 
-  const origin = process.env.SITE_ORIGIN || "";
+  // Vercel sets VERCEL_PROJECT_PRODUCTION_URL; GitHub Pages passes SITE_ORIGIN.
+  const origin =
+    process.env.SITE_ORIGIN ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? "https://" + process.env.VERCEL_PROJECT_PRODUCTION_URL : "");
   if (origin) {
     const urls = written
       .map((p) => `  <url><loc>${origin.replace(/\/$/, "")}${base}${p.route.replace(/^\//, "")}</loc></url>`)
