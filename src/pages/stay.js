@@ -20,6 +20,11 @@ export default function stay(W) {
             <h2>${esc(h.name)}</h2>
             <p class="hotel-card__desc">${esc(h.desc)}</p>
             ${h.distance ? `<p class="hotel-card__distance">${esc(h.distance)}</p>` : ""}
+            ${
+              h.breakfast
+                ? `<p class="hotel-card__perk"><span aria-hidden="true">☕</span> Breakfast included</p>`
+                : ""
+            }
             <div class="hotel-card__actions">
               <a class="btn btn--primary" href="${esc(h.bookingUrl)}" target="_blank" rel="noreferrer">Book</a>
               <a class="btn btn--outline" href="${h.mapsUrl ? esc(h.mapsUrl) : url("/travel/")}"${

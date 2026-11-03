@@ -1697,6 +1697,21 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
 }
 .hotel-card__desc { margin: 0; font-size: 15px; line-height: 1.6; color: var(--muted); flex: 1; }
 .hotel-card__distance { margin: 0; font-size: 14px; line-height: 1.5; color: var(--sage); }
+.hotel-card__perk {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
+  background: var(--sage-1);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--forest);
+}
 .hotel-card__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 .note-pair {
   max-width: var(--wrap);
