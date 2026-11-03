@@ -57,14 +57,10 @@ export default function stay(W) {
   </section>
 
   <section class="section section--last" style="padding-top:40px">
-    <div class="note-pair">
+    <div class="note-pair note-pair--single">
       <div>
         <h2>Where should I actually stay?</h2>
-        <p>In Schliersee village or right on the lake. Everything we're doing is within a few minutes of there, and the shuttles pick up at the station.</p>
-      </div>
-      <div>
-        <h2>Traveling as a group?</h2>
-        <p>An apartment beats four hotel rooms. Message us before you book and we'll tell you who else is looking — several families are sharing houses.</p>
+        <p>In Schliersee village or right on the lake. Everywhere we've listed sits within a five minute walk of everywhere else, which is where we'll be hanging out between events, and where the shuttles pick up.</p>
       </div>
     </div>
   </section>

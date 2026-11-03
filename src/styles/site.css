@@ -1732,6 +1732,8 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
   color: var(--ink);
 }
 .note-pair p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--forest); }
+/* With one note rather than two, keep the line length readable. */
+.note-pair--single p { max-width: 62ch; }
 .placeholder-note {
   margin: 14px 2px 0;
   font-family: var(--sans);
