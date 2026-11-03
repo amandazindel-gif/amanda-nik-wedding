@@ -1,16 +1,21 @@
-import { esc, url, carousel } from "../components/util.js";
+import { esc, url, asset, carousel } from "../components/util.js";
 
 export default function stay(W) {
   const cards = W.hotels
     .map((h) => {
       const photos = [{ src: h.photo, alt: h.photoAlt }].concat(h.gallery || []).filter((p) => p.src);
+      // Somewhere we don't have our own photo of yet: a quiet panel keeps the
+      // grid even instead of leaving a hole.
+      const media = photos.length
+        ? carousel(photos)
+        : `<div class="hotel-card__nophoto" aria-hidden="true"><img src="${asset("assets/monogram.png")}" alt=""></div>`;
       return `
         <div class="card hotel-card">
-          ${carousel(photos)}
+          ${media}
           <div class="hotel-card__body">
             <div class="hotel-card__meta">
               <span class="hotel-card__tier">${esc(h.tier)}</span>
-              <span class="hotel-card__price">${esc(h.price)}</span>
+              ${h.price ? `<span class="hotel-card__price">${esc(h.price)}</span>` : ""}
             </div>
             <h2>${esc(h.name)}</h2>
             <p class="hotel-card__desc">${esc(h.desc)}</p>

@@ -1667,6 +1667,15 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
   gap: 16px;
 }
 .hotel-card .carousel { aspect-ratio: 3 / 2; }
+.hotel-card__nophoto {
+  aspect-ratio: 3 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sage-1);
+  border-bottom: 1px solid var(--line-14);
+}
+.hotel-card__nophoto img { width: 64px; height: 64px; object-fit: contain; opacity: 0.25; }
 .hotel-card__body { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
 .hotel-card__meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .hotel-card__tier {
