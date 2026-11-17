@@ -46,15 +46,15 @@ export default function story(W) {
         <p class="story-voice__eyebrow">Amanda's version</p>
         <h2>My first date in a new city</h2>
         <div class="story-voice__body">
-          <p>I moved to Denver, downloaded Bumble, and Nik was my very first date in the city. I always feel very lucky about that.</p>
-          <p>Our first date was at Ophelia's Electric Soapbox for brunch. We had so much in common, but travel was easily the topic we talked about the most. I even impressed Nik by paying for a drink with Guatemalan currency.</p>
-          <p>It didn't take long for me to realize Nik was everything I've ever wanted in a partner. I've never felt more myself than I am with him.</p>
-          <p>Our very first international trip together was Munich, where I fell in love with the countryside in the Alps.</p>
+          <p>When I moved to Denver, a relationship wasn't on the agenda (at least not right away). The plan was friends first, me first, romance later. That plan lasted about one month before I downloaded Bumble, and Nik was my very first date in the city. I still feel incredibly lucky for that.</p>
+          <p>Our first date was brunch at Ophelia's Electric Soapbox. We had so much in common, but travel was easily the topic we talked about most. I even impressed Nik by paying for a drink with Guatemalan currency.</p>
+          <p>It didn't take long for me to realize Nik was everything I've ever wanted in a partner. He loves me for me, makes me laugh constantly, never says no to an adventure, and is happiest when everyone's together. Most importantly, Daisy approved of him right away, and that was non-negotiable because we were a package deal. I've never felt more like myself than I do with him.</p>
+          <p>Our first international trip together was Munich, where I fell in love with the Alps. So when Nik suggested getting married there, I was all in.</p>
         </div>
       </article>
       <article class="story-voice story-voice--nik">
         <p class="story-voice__eyebrow">Nik's version</p>
-        <h2>I grew up going to Germany.</h2>
+        <h2>A bad dad joke did the trick</h2>
         <div class="story-voice__body">
           <p>Amanda had paid for the premium version of Bumble which immediately matched her with Denver's best talent. Fresh off of a failed dream to be a reality tv star on some lame dating show, I was swiping for love. Amanda responded to a bad dad joke I had listed for one of my prompts, so if that doesn't scream a match I don't know what does.</p>
           <p>When Amanda and I first met, I felt that I had always known her. It didn't take much time to know that this was something different, and something that I never wanted to let go of. For the first time, everything just felt like it was supposed to be and not once have I looked back on us.</p>
