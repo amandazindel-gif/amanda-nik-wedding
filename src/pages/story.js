@@ -67,7 +67,7 @@ export default function story(W) {
   <section class="section" style="padding-top:48px">
     <div class="story-map-card">
       <p class="eyebrow">The map so far</p>
-      <h2>Where we've been, the two of us</h2>
+      <h2>Ground we've covered</h2>
       <p>Sixty-odd countries between us, nine of them together. Germany is the one we kept coming back to, and this time you're all coming with us.</p>
       <div class="story-map" data-story-map role="img" aria-label="World map with the countries Amanda and Nik have travelled highlighted in green across North and Central America, South America, Europe, Africa and Asia, with Germany marked in terracotta"></div>
       <div class="story-map__legend">
