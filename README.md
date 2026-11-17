@@ -202,7 +202,6 @@ replies have any em or en dashes stripped, and markdown links like
 - [ ] **Confirm the ceremony time** in `weddingISO` — the countdown and the
       calendar maths both read it.
 - [ ] **`contactEmail`** is a placeholder.
-- [ ] **Nik's story copy** on `/story/` is a stub.
 - [ ] **Tracht shop and rental links** on `/wear/`. The card shows
       "More info coming soon!" until `links` on the tracht dress code has
       entries; add them and the note is replaced by buttons automatically.

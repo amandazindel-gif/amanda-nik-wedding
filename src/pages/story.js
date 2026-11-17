@@ -56,8 +56,9 @@ export default function story(W) {
         <p class="story-voice__eyebrow">Nik's version</p>
         <h2>I grew up going to Germany.</h2>
         <div class="story-voice__body">
-          <!-- PLACEHOLDER · Nik's copy still to come. -->
-          <p>More soon.</p>
+          <p>Amanda had paid for the premium version of Bumble which immediately matched her with Denver's best talent. Fresh off of a failed dream to be a reality tv star on some lame dating show, I was swiping for love. Amanda responded to a bad dad joke I had listed for one of my prompts, so if that doesn't scream a match I don't know what does.</p>
+          <p>When Amanda and I first met, I felt that I had always known her. It didn't take much time to know that this was something different, and something that I never wanted to let go of. For the first time, everything just felt like it was supposed to be and not once have I looked back on us.</p>
+          <p>Obviously one of our bonds is travel, and what better way to get to know someone than to do it together. Fairly quickly we started exploring the world together, with our first stop being the Bavarian Alps. With my family ties to the region, I wanted to show her how special this place was to me. Little did we know it would soon have that much more meaning for both of us :)</p>
         </div>
       </article>
     </div>
