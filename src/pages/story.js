@@ -81,6 +81,7 @@ export default function story(W) {
       <div>
         <h2>Daisy Girl</h2>
         <p>Queen of side eye but the sweetest girl in the world. Amanda adopted her during Covid when she was two years old. She lived in Chicago, Tucson, and finally Denver. Nik fell for her on day one, which was good, because we were a package deal. She's sitting this one out, but she's in every part of how we got here, and she'll be at the door when we land.</p>
+        <p>Feel free to ask her a question. She doesn't have thumbs but she'll respond as quickly as she can.</p>
       </div>
       <div class="story-daisy__photo">
         <img src="${asset("assets/daisy-photo.jpg")}" alt="Amanda kissing Daisy on a rocky outcrop in the forest while Nik looks on, golden evening light behind them" loading="lazy">
