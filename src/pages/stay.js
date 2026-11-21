@@ -48,8 +48,11 @@ export default function stay(W) {
                         : "",
                       h.bookPhone
                         ? `<a class="btn btn--outline" href="tel:${esc(telHref(h.bookPhone))}">Call to book</a>`
+                        : "",
+                      h.websiteUrl
+                        ? `<a class="btn btn--outline" href="${esc(h.websiteUrl)}" target="_blank" rel="noreferrer">Website</a>`
                         : ""
-                    ].join("\n              ")
+                    ].filter(Boolean).join("\n              ")
                   : `<a class="btn btn--primary" href="${esc(h.bookingUrl)}" target="_blank" rel="noreferrer">Book</a>
               <a class="btn btn--outline" href="${h.mapsUrl ? esc(h.mapsUrl) : url("/travel/")}"${
                       h.mapsUrl ? ' target="_blank" rel="noreferrer"' : ""
