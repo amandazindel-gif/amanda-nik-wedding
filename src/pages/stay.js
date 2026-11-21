@@ -1,5 +1,11 @@
 import { esc, url, asset, carousel } from "../components/util.js";
 
+/* "+49 (0) 8026 92 92 00" -> "+498026929200". The (0) is for domestic dialling
+   and must not appear in an international tel: link. */
+function telHref(phone) {
+  return "+" + String(phone).replace(/\(0\)/g, "").replace(/\D/g, "");
+}
+
 export default function stay(W) {
   const cards = W.hotels
     .map((h) => {
@@ -22,6 +28,7 @@ export default function stay(W) {
             ${h.distance ? `<p class="hotel-card__distance">${esc(h.distance)}</p>` : ""}
             ${(() => {
               const perks = [];
+              if (h.availableDates) perks.push(["📅", `Available ${h.availableDates}`]);
               if (h.breakfast) perks.push(["☕", "Breakfast included"]);
               if (h.minNights) perks.push(["🌙", `${h.minNights}-night minimum`]);
               return perks.length
@@ -30,11 +37,24 @@ export default function stay(W) {
                     .join("")}</div>`
                 : "";
             })()}
+            ${h.availableNote ? `<p class="hotel-card__fine">${esc(h.availableNote)}</p>` : ""}
             <div class="hotel-card__actions">
-              <a class="btn btn--primary" href="${esc(h.bookingUrl)}" target="_blank" rel="noreferrer">Book</a>
+              ${
+                h.bookEmail || h.bookPhone
+                  ? // Booked direct with the hotel rather than through a site.
+                    [
+                      h.bookEmail
+                        ? `<a class="btn btn--primary" href="mailto:${esc(h.bookEmail)}">Email to book</a>`
+                        : "",
+                      h.bookPhone
+                        ? `<a class="btn btn--outline" href="tel:${esc(telHref(h.bookPhone))}">Call to book</a>`
+                        : ""
+                    ].join("\n              ")
+                  : `<a class="btn btn--primary" href="${esc(h.bookingUrl)}" target="_blank" rel="noreferrer">Book</a>
               <a class="btn btn--outline" href="${h.mapsUrl ? esc(h.mapsUrl) : url("/travel/")}"${
-                h.mapsUrl ? ' target="_blank" rel="noreferrer"' : ""
-              }>See on map</a>
+                      h.mapsUrl ? ' target="_blank" rel="noreferrer"' : ""
+                    }>See on map</a>`
+              }
             </div>
           </div>
         </div>`;
