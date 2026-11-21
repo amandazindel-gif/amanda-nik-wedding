@@ -1,6 +1,17 @@
 import { esc, asset } from "../components/util.js";
 
 export default function story(W) {
+  // Counts for the map key, derived from the same arrays the map draws, so the
+  // key can never disagree with what's on screen.
+  const canonical = new Map();
+  (W.countryAliases || []).forEach((group) => group.forEach((name) => canonical.set(name, group[0])));
+  const canon = (name) => canonical.get(name) || name;
+
+  const unique = new Set(W.countriesVisited.map(canon));
+  unique.add("Germany"); // drawn in terracotta, but still a country they've been to
+  const togetherCount = W.countriesTogether.length;
+  const soloCount = unique.size - togetherCount;
+
   const figures = W.storyPhotos
     .map((p) => {
       const crop = p.scale ? " story-figure--crop" : "";
@@ -71,8 +82,8 @@ export default function story(W) {
       <p>Seventy-six countries between us, fifty-six once you stop double counting, and eleven we saw together. Germany is the one we kept coming back to, and this time you're all coming with us.</p>
       <div class="story-map" data-story-map role="img" aria-label="World map across North and Central America, South America, Europe, Africa, Asia and Oceania. Countries one of us has visited are pale green, the eleven we travelled together are dark green, and Germany is marked in terracotta."></div>
       <div class="story-map__legend">
-        <span><span class="story-map__swatch story-map__swatch--one" aria-hidden="true"></span>One of us</span>
-        <span><span class="story-map__swatch story-map__swatch--both" aria-hidden="true"></span>Together</span>
+        <span><span class="story-map__swatch story-map__swatch--one" aria-hidden="true"></span>One of us <b>${soloCount}</b></span>
+        <span><span class="story-map__swatch story-map__swatch--both" aria-hidden="true"></span>Together <b>${togetherCount}</b></span>
         <span><span class="story-map__swatch story-map__swatch--next" aria-hidden="true"></span>Where we're getting married</span>
       </div>
     </div>
