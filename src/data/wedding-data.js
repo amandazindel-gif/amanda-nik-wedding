@@ -229,10 +229,9 @@ export const wedding = {
      together (countriesTogether below) and the rest by one or the other. */
   countriesVisited: ["United States of America", "Canada", "Mexico", "Costa Rica", "Guatemala", "Panama", "Brazil", "Bahamas", "Morocco", "South Africa", "Botswana", "Zimbabwe", "Mauritius", "Austria", "Italy", "Spain", "France", "United Kingdom", "Ireland", "Portugal", "Belgium", "Greece", "Croatia", "New Zealand", "China", "Vietnam", "Thailand", "Japan", "India", "Zambia", "Czechia", "Czech Rep.", "Czech Republic", "Hungary", "Iceland", "Netherlands", "Slovakia", "Switzerland", "Puerto Rico", "Ghana", "Nicaragua", "Belize", "United Arab Emirates", "South Korea", "Korea", "Myanmar", "Turkey", "Türkiye", "Sweden", "Honduras", "North Macedonia", "Macedonia", "Ukraine", "Aruba", "Hong Kong", "Sint Maarten", "Gibraltar", "Turks and Caicos", "Vatican City", "Singapore"],
 
-  /* The ten they travelled together, drawn in the darker green.
-     PLACEHOLDER · seven are confirmed by the photos on this page; the last
-     three still need confirming. */
-  countriesTogether: ["Germany", "South Africa", "Botswana", "Zimbabwe", "Greece", "Panama", "Canada"],
+  /* The ones they travelled together, drawn in the darker green. Puerto Rico
+     is counted separately from the US here, the way the flag apps count it. */
+  countriesTogether: ["Canada", "United States of America", "United Kingdom", "Greece", "Germany", "South Africa", "Botswana", "Zambia", "Zimbabwe", "Puerto Rico", "Panama"],
 
   /* Island states too small for the 1:110m geometry, drawn as dots. */
   mapIslands: [
