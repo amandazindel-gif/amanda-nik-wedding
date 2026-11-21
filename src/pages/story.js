@@ -68,10 +68,12 @@ export default function story(W) {
     <div class="story-map-card">
       <p class="eyebrow">The map so far</p>
       <h2>Ground we've covered</h2>
-      <p>Seventy-six countries between us, fifty-four once you stop double counting, and ten we've seen together. Germany is the one we kept coming back to, and this time you're all coming with us.</p>
-      <div class="story-map" data-story-map role="img" aria-label="World map with the countries Amanda and Nik have travelled highlighted in green across North and Central America, South America, Europe, Africa and Asia, with Germany marked in terracotta"></div>
+      <p>Seventy-six countries between us, fifty-six once you stop double counting, and ten we saw together. Germany is the one we kept coming back to, and this time you're all coming with us.</p>
+      <div class="story-map" data-story-map role="img" aria-label="World map across North and Central America, South America, Europe, Africa, Asia and Oceania. Countries one of us has visited are pale green, the ten we travelled together are dark green, and Germany is marked in terracotta."></div>
       <div class="story-map__legend">
-        <span><span class="story-map__swatch" aria-hidden="true"></span>Countries we've been to</span>
+        <span><span class="story-map__swatch story-map__swatch--one" aria-hidden="true"></span>One of us</span>
+        <span><span class="story-map__swatch story-map__swatch--both" aria-hidden="true"></span>Together</span>
+        <span><span class="story-map__swatch story-map__swatch--next" aria-hidden="true"></span>Where we're getting married</span>
       </div>
     </div>
   </section>
@@ -98,6 +100,7 @@ export default function story(W) {
     body,
     head: `<script>window.__WED_MAP = ${JSON.stringify({
       been: W.countriesVisited,
+      together: W.countriesTogether,
       next: "Germany",
       islands: W.mapIslands
     })};</script>`,

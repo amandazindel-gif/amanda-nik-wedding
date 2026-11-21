@@ -221,9 +221,18 @@ export const wedding = {
     { src: "assets/us-south-africa.jpg", alt: "Amanda and Nik in matching blue shweshwe outfits in a garden", place: "Pretoria", country: "South Africa", objectPosition: "50% 68%", scale: 1.4, transformOrigin: "52% 58%" }
   ],
 
-  /* Countries highlighted on the Our Story map. Names must match
-     world-atlas@2 countries-110m `properties.name`. */
-  countriesVisited: ["United States of America", "Canada", "Mexico", "Costa Rica", "Guatemala", "Panama", "Brazil", "Bahamas", "Morocco", "South Africa", "Botswana", "Zimbabwe", "Mauritius", "Austria", "Italy", "Spain", "France", "United Kingdom", "Ireland", "Portugal", "Belgium", "Greece", "Croatia", "New Zealand", "China", "Vietnam", "Thailand", "Japan", "India", "Zambia", "Czechia", "Czech Rep.", "Czech Republic", "Hungary", "Iceland", "Netherlands", "Slovakia", "Switzerland", "Puerto Rico", "Ghana", "Nicaragua", "Belize", "United Arab Emirates", "South Korea", "Korea", "Myanmar", "Turkey", "Türkiye", "Sweden", "Honduras", "North Macedonia", "Macedonia", "Ukraine"],
+  /* Countries on the Our Story map. Names must match world-atlas@2
+     countries-110m `properties.name`; a few appear more than once because the
+     atlas and everyday usage disagree on the spelling.
+
+     56 unique countries between the two of them, of which 10 were visited
+     together (countriesTogether below) and the rest by one or the other. */
+  countriesVisited: ["United States of America", "Canada", "Mexico", "Costa Rica", "Guatemala", "Panama", "Brazil", "Bahamas", "Morocco", "South Africa", "Botswana", "Zimbabwe", "Mauritius", "Austria", "Italy", "Spain", "France", "United Kingdom", "Ireland", "Portugal", "Belgium", "Greece", "Croatia", "New Zealand", "China", "Vietnam", "Thailand", "Japan", "India", "Zambia", "Czechia", "Czech Rep.", "Czech Republic", "Hungary", "Iceland", "Netherlands", "Slovakia", "Switzerland", "Puerto Rico", "Ghana", "Nicaragua", "Belize", "United Arab Emirates", "South Korea", "Korea", "Myanmar", "Turkey", "Türkiye", "Sweden", "Honduras", "North Macedonia", "Macedonia", "Ukraine", "Aruba", "Hong Kong", "Sint Maarten", "Gibraltar", "Turks and Caicos", "Vatican City", "Singapore"],
+
+  /* The ten they travelled together, drawn in the darker green.
+     PLACEHOLDER · seven are confirmed by the photos on this page; the last
+     three still need confirming. */
+  countriesTogether: ["Germany", "South Africa", "Botswana", "Zimbabwe", "Greece", "Panama", "Canada"],
 
   /* Island states too small for the 1:110m geometry, drawn as dots. */
   mapIslands: [

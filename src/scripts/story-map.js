@@ -45,6 +45,9 @@ async function draw() {
     .attr("preserveAspectRatio", "xMidYMid meet")
     .attr("aria-hidden", "true");
 
+  const together = new Set(CFG.together || []);
+  const been = new Set(CFG.been || []);
+
   svg
     .append("g")
     .selectAll("path")
@@ -53,8 +56,11 @@ async function draw() {
     .attr("d", path)
     .attr("fill", (d) => {
       const n = d.properties && d.properties.name;
+      // Where the wedding is wins over everything, then the two of them
+      // together, then one of them, then never been.
       if (n === CFG.next) return "#B8674A";
-      return CFG.been.indexOf(n) >= 0 ? "#7C8C6B" : "#E8E4D6";
+      if (together.has(n)) return "#4F5D48";
+      return been.has(n) ? "#7C8C6B" : "#E8E4D6";
     })
     .attr("stroke", "#FFFDF8")
     .attr("stroke-width", 0.6);
@@ -68,7 +74,7 @@ async function draw() {
       .attr("cx", q[0])
       .attr("cy", q[1])
       .attr("r", 3.4)
-      .attr("fill", "#7C8C6B")
+      .attr("fill", together.has(isl.name) ? "#4F5D48" : "#7C8C6B")
       .attr("stroke", "#FFFDF8")
       .attr("stroke-width", 0.8);
   });

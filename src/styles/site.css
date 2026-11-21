@@ -1148,6 +1148,9 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
 .story-map__legend { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 14px; }
 .story-map__legend span { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--forest); }
 .story-map__swatch { width: 12px; height: 12px; border-radius: 3px; background: var(--sage); }
+.story-map__swatch--one { background: var(--sage); }
+.story-map__swatch--both { background: var(--forest); }
+.story-map__swatch--next { background: var(--terracotta); }
 .story-daisy {
   max-width: 680px;
   margin: 0 auto;
