@@ -33,6 +33,20 @@ Things that are *not* in that file, because they appear exactly once:
 | June weather numbers | [`src/pages/wear.js`](src/pages/wear.js) |
 | Colours, type, spacing | [`src/styles/site.css`](src/styles/site.css) (design tokens live at the top) |
 
+### Hotel room rates
+
+The "Click for Pricing" popup on `/stay/` reads the `rooms` array on each hotel
+in the data file. It is a **snapshot**, taken from the
+[Rooming list sheet](https://docs.google.com/spreadsheets/d/161W4yq-Ahl9EYWwiVPo1ebxaEvRLr68EbLHrzChCxZE/edit),
+deduplicated from one row per physical room to one row per room type. Prices
+are per room per night.
+
+It is deliberately **not** pulled live. That sheet also records guest names and
+who is staying in which room; feeding the page from it would mean publishing
+the lot. When rates change, edit `rooms` in the data file and push.
+
+A hotel with no `rooms` simply shows no pricing button.
+
 Photos go in `public/assets/`. Reference them as `assets/<name>.jpg` — the build
 adds the right prefix.
 
