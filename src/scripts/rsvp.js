@@ -320,7 +320,6 @@ rsvpForm.addEventListener("submit", async (e) => {
   const payload = {
     partyId: state.partyId,
     shareContact: share,
-    side: share ? $("[data-side]").value : "",
     song: $("[data-song]").value,
     notes: $("[data-notes]").value,
     guests: state.people.map((p) => {

@@ -58,15 +58,6 @@ export default function rsvp(W) {
           </label>
           <div class="share-fields-block" data-share-fields hidden>
             <p class="share-note">Add a phone number or email for each person, and they'll appear on the <a href="${url("/guests/")}">Guests page</a> for other guests to find. Either one is enough.</p>
-            <label class="field">
-              <span>Whose side are you on? (we won't tell)</span>
-              <select data-side>
-                <option value="">Prefer not to say</option>
-                <option value="Amanda's side">Amanda's side</option>
-                <option value="Nik's side">Nik's side</option>
-                <option value="Both">Both</option>
-              </select>
-            </label>
             <div data-share-people></div>
           </div>
           <label class="field">
