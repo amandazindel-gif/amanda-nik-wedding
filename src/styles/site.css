@@ -1745,7 +1745,7 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
 .hotel-card__contact span { font-weight: 700; color: var(--forest); }
 .hotel-card__contact a { color: var(--terracotta); text-decoration: none; word-break: break-word; }
 .hotel-card__contact a:hover { color: var(--terracotta-link-hover); text-decoration: underline; }
-.hotel-card__contact + .btn { align-self: flex-start; margin-top: 12px; }
+.hotel-card__contact + .hotel-card__actions { margin-top: 12px; }
 
 /* ---------- Room-rate dialog ---------- */
 .rates {

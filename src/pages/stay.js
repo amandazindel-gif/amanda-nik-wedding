@@ -87,17 +87,19 @@ export default function stay(W) {
                   : "",
                 h.bookPhone
                   ? `<li><span>Call to Book:</span> <a href="tel:${esc(telHref(h.bookPhone))}">${esc(h.bookPhone)}</a></li>`
-                  : "",
-                h.websiteUrl
-                  ? `<li><a href="${esc(h.websiteUrl)}" target="_blank" rel="noreferrer">Website</a></li>`
                   : ""
               ].filter(Boolean).join("\n              ")}
             </ul>
-            ${
-              h.rooms && h.rooms.length
-                ? `<button type="button" class="btn btn--primary" data-rates-open="${esc(slug(h.name))}">Click for Pricing</button>`
-                : ""
-            }`
+            <div class="hotel-card__actions">
+              ${[
+                h.rooms && h.rooms.length
+                  ? `<button type="button" class="btn btn--primary" data-rates-open="${esc(slug(h.name))}">Click for Pricing</button>`
+                  : "",
+                h.websiteUrl
+                  ? `<a class="btn btn--outline" href="${esc(h.websiteUrl)}" target="_blank" rel="noreferrer">Website</a>`
+                  : ""
+              ].filter(Boolean).join("\n              ")}
+            </div>`
                 : `<div class="hotel-card__actions">
               <a class="btn btn--primary" href="${esc(h.bookingUrl)}" target="_blank" rel="noreferrer">${esc(h.bookingLabel || "Book")}</a>
               ${
