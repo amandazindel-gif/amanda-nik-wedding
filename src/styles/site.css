@@ -1725,6 +1725,18 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
   color: var(--forest);
 }
 .hotel-card__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+/* Email, phone number and website have to sit on one line, and the phone
+   number is a long label, so these three shrink rather than wrap. */
+.hotel-card__actions--direct { flex-wrap: nowrap; gap: 6px; align-items: stretch; }
+.btn--tight {
+  min-height: 42px;
+  padding: 0 10px;
+  font-size: 12px;
+  letter-spacing: 0;
+  white-space: nowrap;
+  flex: 0 1 auto;
+  min-width: 0;
+}
 .note-pair {
   max-width: var(--wrap);
   margin: 0 auto;

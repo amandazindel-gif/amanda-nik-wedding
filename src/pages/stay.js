@@ -38,19 +38,19 @@ export default function stay(W) {
                 : "";
             })()}
             ${h.availableNote ? `<p class="hotel-card__fine">${esc(h.availableNote)}</p>` : ""}
-            <div class="hotel-card__actions">
+            <div class="hotel-card__actions${h.bookEmail || h.bookPhone ? " hotel-card__actions--direct" : ""}">
               ${
                 h.bookEmail || h.bookPhone
                   ? // Booked direct with the hotel rather than through a site.
                     [
                       h.bookEmail
-                        ? `<a class="btn btn--primary" href="mailto:${esc(h.bookEmail)}">Email to book</a>`
+                        ? `<a class="btn btn--primary btn--tight" href="mailto:${esc(h.bookEmail)}">Email</a>`
                         : "",
                       h.bookPhone
-                        ? `<a class="btn btn--outline" href="tel:${esc(telHref(h.bookPhone))}">Call to book</a>`
+                        ? `<a class="btn btn--outline btn--tight" href="tel:${esc(telHref(h.bookPhone))}">${esc(h.bookPhone)}</a>`
                         : "",
                       h.websiteUrl
-                        ? `<a class="btn btn--outline" href="${esc(h.websiteUrl)}" target="_blank" rel="noreferrer">Website</a>`
+                        ? `<a class="btn btn--outline btn--tight" href="${esc(h.websiteUrl)}" target="_blank" rel="noreferrer">Website</a>`
                         : ""
                     ].filter(Boolean).join("\n              ")
                   : `<a class="btn btn--primary" href="${esc(h.bookingUrl)}" target="_blank" rel="noreferrer">Book</a>
