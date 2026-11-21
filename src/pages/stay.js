@@ -6,6 +6,45 @@ function telHref(phone) {
   return "+" + String(phone).replace(/\(0\)/g, "").replace(/\D/g, "");
 }
 
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+/* One dialog per hotel with rates, opened by its "Click for Pricing" button. */
+function ratesDialog(h) {
+  const rows = h.rooms
+    .map(
+      (r) => `
+            <tr>
+              <th scope="row">${esc(r.type)}</th>
+              <td>${esc(r.details)}</td>
+              <td class="rates__price">${esc(r.perNight)}</td>
+            </tr>`
+    )
+    .join("");
+
+  return `
+  <dialog class="rates" data-rates="${esc(slug(h.name))}" aria-labelledby="rates-${esc(slug(h.name))}-title">
+    <div class="rates__head">
+      <div>
+        <p class="rates__eyebrow">Room rates</p>
+        <h2 id="rates-${esc(slug(h.name))}-title">${esc(h.name)}</h2>
+      </div>
+      <button type="button" class="rates__close" data-rates-close aria-label="Close">×</button>
+    </div>
+    <div class="rates__scroll">
+      <table class="rates__table">
+        <thead>
+          <tr><th scope="col">Room type</th><th scope="col">Details</th><th scope="col">Per night</th></tr>
+        </thead>
+        <tbody>${rows}
+        </tbody>
+      </table>
+    </div>
+    <p class="rates__fine">Per room, per night, breakfast included.${
+      h.availableDates ? ` Rooms are held ${esc(h.availableDates)}; other nights can be requested.` : ""
+    } Contact the hotel direct to book.</p>
+  </dialog>`;
+}
+
 export default function stay(W) {
   const cards = W.hotels
     .map((h) => {
@@ -38,27 +77,34 @@ export default function stay(W) {
                 : "";
             })()}
             ${h.availableNote ? `<p class="hotel-card__fine">${esc(h.availableNote)}</p>` : ""}
-            <div class="hotel-card__actions${h.bookEmail || h.bookPhone ? " hotel-card__actions--direct" : ""}">
-              ${
-                h.bookEmail || h.bookPhone
-                  ? // Booked direct with the hotel rather than through a site.
-                    [
-                      h.bookEmail
-                        ? `<a class="btn btn--primary btn--tight" href="mailto:${esc(h.bookEmail)}">Email to book</a>`
-                        : "",
-                      h.bookPhone
-                        ? `<a class="btn btn--outline btn--tight" href="tel:${esc(telHref(h.bookPhone))}">${esc(h.bookPhone)}</a>`
-                        : "",
-                      h.websiteUrl
-                        ? `<a class="btn btn--outline btn--tight" href="${esc(h.websiteUrl)}" target="_blank" rel="noreferrer">Website</a>`
-                        : ""
-                    ].filter(Boolean).join("\n              ")
-                  : `<a class="btn btn--primary" href="${esc(h.bookingUrl)}" target="_blank" rel="noreferrer">Book</a>
+            ${
+              h.bookEmail || h.bookPhone
+                ? // Booked direct with the hotel rather than through a site.
+                  `<ul class="hotel-card__contact">
+              ${[
+                h.bookEmail
+                  ? `<li><span>Email to Book:</span> <a href="mailto:${esc(h.bookEmail)}">${esc(h.bookEmail)}</a></li>`
+                  : "",
+                h.bookPhone
+                  ? `<li><span>Call to Book:</span> <a href="tel:${esc(telHref(h.bookPhone))}">${esc(h.bookPhone)}</a></li>`
+                  : "",
+                h.websiteUrl
+                  ? `<li><a href="${esc(h.websiteUrl)}" target="_blank" rel="noreferrer">Website</a></li>`
+                  : ""
+              ].filter(Boolean).join("\n              ")}
+            </ul>
+            ${
+              h.rooms && h.rooms.length
+                ? `<button type="button" class="btn btn--primary" data-rates-open="${esc(slug(h.name))}">Click for Pricing</button>`
+                : ""
+            }`
+                : `<div class="hotel-card__actions">
+              <a class="btn btn--primary" href="${esc(h.bookingUrl)}" target="_blank" rel="noreferrer">Book</a>
               <a class="btn btn--outline" href="${h.mapsUrl ? esc(h.mapsUrl) : url("/travel/")}"${
-                      h.mapsUrl ? ' target="_blank" rel="noreferrer"' : ""
-                    }>See on map</a>`
-              }
-            </div>
+                    h.mapsUrl ? ' target="_blank" rel="noreferrer"' : ""
+                  }>See on map</a>
+            </div>`
+            }
           </div>
         </div>`;
     })
@@ -76,6 +122,7 @@ export default function stay(W) {
       <div class="hotel-grid">${cards}
       </div>
       <p class="placeholder-note">PLACEHOLDER · room-block codes and final booking links</p>
+      ${W.hotels.filter((h) => h.rooms && h.rooms.length).map(ratesDialog).join("")}
     </div>
   </section>
 
@@ -94,6 +141,7 @@ export default function stay(W) {
     title: "Stay · Amanda & Nik",
     desc: "Where to sleep in Schliersee: the Seehotel on the lake, the Terofal in the village, and apartments around the water.",
     current: "stay",
-    body
+    body,
+    scripts: ["scripts/stay.js"]
   };
 }
