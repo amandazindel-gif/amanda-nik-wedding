@@ -82,7 +82,7 @@ export default function story(W) {
       <p>Seventy-six countries between us, fifty-six once you stop double counting, and eleven we saw together. Germany is the one we kept coming back to, and this time you're all coming with us.</p>
       <div class="story-map" data-story-map role="img" aria-label="World map across North and Central America, South America, Europe, Africa, Asia and Oceania. Countries one of us has visited are pale green, the eleven we travelled together are dark green, and Germany is marked in terracotta."></div>
       <div class="story-map__legend">
-        <span><span class="story-map__swatch story-map__swatch--one" aria-hidden="true"></span>One of us <b>${soloCount}</b></span>
+        <span><span class="story-map__swatch story-map__swatch--one" aria-hidden="true"></span>Unique countries <b>${soloCount}</b></span>
         <span><span class="story-map__swatch story-map__swatch--both" aria-hidden="true"></span>Together <b>${togetherCount}</b></span>
         <span><span class="story-map__swatch story-map__swatch--next" aria-hidden="true"></span>Where we're getting married</span>
       </div>
