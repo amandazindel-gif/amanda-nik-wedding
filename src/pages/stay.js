@@ -44,7 +44,7 @@ export default function stay(W) {
                   ? // Booked direct with the hotel rather than through a site.
                     [
                       h.bookEmail
-                        ? `<a class="btn btn--primary btn--tight" href="mailto:${esc(h.bookEmail)}">Email</a>`
+                        ? `<a class="btn btn--primary btn--tight" href="mailto:${esc(h.bookEmail)}">Email to book</a>`
                         : "",
                       h.bookPhone
                         ? `<a class="btn btn--outline btn--tight" href="tel:${esc(telHref(h.bookPhone))}">${esc(h.bookPhone)}</a>`

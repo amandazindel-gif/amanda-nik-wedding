@@ -1671,9 +1671,11 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
 /* =========================================================================
    Stay
    ========================================================================= */
+/* 360px is the width at which a card still fits its three booking buttons on
+   one line. Below that the grid drops a column rather than squeezing them. */
 .hotel-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
   gap: 16px;
 }
 .hotel-card .carousel { aspect-ratio: 3 / 2; }
@@ -1727,15 +1729,17 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
 .hotel-card__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 /* Email, phone number and website have to sit on one line, and the phone
    number is a long label, so these three shrink rather than wrap. */
-.hotel-card__actions--direct { flex-wrap: nowrap; gap: 6px; align-items: stretch; }
+/* These three sit on one line at every card width the grid normally produces.
+   Wrapping stays on so that if a label ever outgrows the card, they drop to a
+   second line instead of the text being clipped inside the buttons. */
+.hotel-card__actions--direct { gap: 4px; align-items: stretch; }
 .btn--tight {
   min-height: 42px;
-  padding: 0 10px;
-  font-size: 12px;
+  padding: 0 8px;
+  font-size: 11px;
   letter-spacing: 0;
   white-space: nowrap;
-  flex: 0 1 auto;
-  min-width: 0;
+  flex: 0 0 auto;
 }
 .note-pair {
   max-width: var(--wrap);
