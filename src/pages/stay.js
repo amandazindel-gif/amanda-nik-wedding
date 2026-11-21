@@ -99,10 +99,12 @@ export default function stay(W) {
                 : ""
             }`
                 : `<div class="hotel-card__actions">
-              <a class="btn btn--primary" href="${esc(h.bookingUrl)}" target="_blank" rel="noreferrer">Book</a>
-              <a class="btn btn--outline" href="${h.mapsUrl ? esc(h.mapsUrl) : url("/travel/")}"${
-                    h.mapsUrl ? ' target="_blank" rel="noreferrer"' : ""
-                  }>See on map</a>
+              <a class="btn btn--primary" href="${esc(h.bookingUrl)}" target="_blank" rel="noreferrer">${esc(h.bookingLabel || "Book")}</a>
+              ${
+                h.altBookingUrl
+                  ? `<a class="btn btn--outline" href="${esc(h.altBookingUrl)}" target="_blank" rel="noreferrer">${esc(h.altBookingLabel || "More options")}</a>`
+                  : ""
+              }
             </div>`
             }
           </div>
