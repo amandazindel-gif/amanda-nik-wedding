@@ -223,7 +223,7 @@ export const wedding = {
 
   /* Countries highlighted on the Our Story map. Names must match
      world-atlas@2 countries-110m `properties.name`. */
-  countriesVisited: ["United States of America", "Canada", "Mexico", "Costa Rica", "Guatemala", "Panama", "Brazil", "Bahamas", "Morocco", "South Africa", "Botswana", "Zimbabwe", "Mauritius", "Austria", "Italy", "Spain", "France", "United Kingdom", "Ireland", "Portugal", "Belgium", "Greece", "Croatia", "New Zealand", "China", "Vietnam", "Thailand", "Japan", "India", "Zambia", "Czechia", "Czech Rep.", "Czech Republic", "Hungary", "Iceland", "Netherlands", "Slovakia", "Switzerland", "Puerto Rico", "Ghana", "Nicaragua", "Belize", "United Arab Emirates", "South Korea", "Korea", "Myanmar", "Turkey", "Türkiye", "Sweden"],
+  countriesVisited: ["United States of America", "Canada", "Mexico", "Costa Rica", "Guatemala", "Panama", "Brazil", "Bahamas", "Morocco", "South Africa", "Botswana", "Zimbabwe", "Mauritius", "Austria", "Italy", "Spain", "France", "United Kingdom", "Ireland", "Portugal", "Belgium", "Greece", "Croatia", "New Zealand", "China", "Vietnam", "Thailand", "Japan", "India", "Zambia", "Czechia", "Czech Rep.", "Czech Republic", "Hungary", "Iceland", "Netherlands", "Slovakia", "Switzerland", "Puerto Rico", "Ghana", "Nicaragua", "Belize", "United Arab Emirates", "South Korea", "Korea", "Myanmar", "Turkey", "Türkiye", "Sweden", "Honduras", "North Macedonia", "Macedonia", "Ukraine"],
 
   /* Island states too small for the 1:110m geometry, drawn as dots. */
   mapIslands: [
@@ -234,7 +234,10 @@ export const wedding = {
     { name: "Turks and Caicos", lonLat: [-71.8, 21.7] },
     { name: "Puerto Rico", lonLat: [-66.4, 18.2] },
     { name: "Vatican City", lonLat: [12.45, 41.9] },
-    { name: "Singapore", lonLat: [103.82, 1.35] }
+    { name: "Singapore", lonLat: [103.82, 1.35] },
+    { name: "Aruba", lonLat: [-69.97, 12.52] },
+    { name: "Hong Kong", lonLat: [114.17, 22.32] },
+    { name: "Sint Maarten", lonLat: [-63.05, 18.04] }
   ],
 
   /* ---------- What to wear ---------- */
