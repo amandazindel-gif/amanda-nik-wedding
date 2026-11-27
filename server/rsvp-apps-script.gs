@@ -314,12 +314,24 @@ function onOpen() {
 
 function rebuildDirectory() {
   const n = upsertDirectory_(latestFromRsvps_());
-  SpreadsheetApp.getUi().alert(
-    n
-      ? "Guest list updated from " + n + " RSVP" + (n === 1 ? "" : "s") + ".\n\n" +
-        "Rows you hid stay hidden. The website updates on the next page load."
-      : "No RSVPs to read yet, so nothing changed."
-  );
+
+  // Commit the rows before anything else can throw. Apps Script buffers writes
+  // until the end of a run, so an exception after this point would otherwise
+  // discard them.
+  SpreadsheetApp.flush();
+
+  const msg = n
+    ? "Guest list updated from " + n + " RSVP" + (n === 1 ? "" : "s") + ".\n\n" +
+      "Rows you hid stay hidden. The website updates on the next page load."
+    : "No RSVPs to read yet, so nothing changed.";
+
+  // getUi() only exists when this runs from the sheet's menu. Run from the
+  // Apps Script editor there is no dialog to show, which must not be an error.
+  try {
+    SpreadsheetApp.getUi().alert(msg);
+  } catch (noUi) {
+    console.log(msg);
+  }
 }
 
 function jsonOut_(obj) {
