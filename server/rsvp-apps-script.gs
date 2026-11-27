@@ -33,8 +33,14 @@
  *              Named "Website guest list" so it does not collide with the
  *              planner template's own "Guest list" tab.
  *
- * Parties: guests who share the same address are grouped into one invitation,
- * so one person can RSVP for their whole household.
+ * The RSVP lookup reads the tab whose id is GUEST_TAB_GID below, currently
+ * "Mailing Info": one row per invitation, with First Name, Last Name and a
+ * Plus One column. Searching either name finds the invitation, so a plus one
+ * can look themselves up and reply for the pair.
+ *
+ * If that tab ever gains an Address column, rows sharing an address are
+ * grouped into one invitation instead. It has none today, so each row is its
+ * own invitation, which is what the sheet already describes.
  */
 
 const GUEST_TAB_GID = 1473395423;   // the tab from your link (#gid=...)
