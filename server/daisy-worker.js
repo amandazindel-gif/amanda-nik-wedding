@@ -66,7 +66,7 @@ Thursday 17 June: 2:00 PM shuttles from the Terofal, 2:30 PM coffee and cake at 
 Friday 18 June: nothing formal, a recovery day at the lake.
 
 STAY
-Seehotel Schlierseer Hof, on the lake, where most guests are staying. Terofal Boutique Hotel, in the village. Apartments on Vrbo and Airbnb around the lake. June is high season and most places want a 2 to 3 night minimum, so book early.
+Seehotel Schlierseer Hof, on the lake, where most guests are staying. Der Johanneshof and Das Maximilian, both in the village, booked direct. Apartments on Vrbo and Airbnb around the lake. June is high season and most places want a 2 to 3 night minimum, so book early. Amanda and Nik are staying at the Terofal in the middle of the village with some of the family; it is not one of the places guests can book, but the wedding-day shuttles leave from outside it.
 
 ATTIRE
 Wednesday: Tracht strongly encouraged, dirndl or lederhosen, rentals around 50 to 60 euros delivered to the hotel. Thursday: Alpine cocktail, midi or long dresses, summer or linen suits, a layer for the evening, flats or block heels because of grass and gravel, no black tie and no stilettos. Friday: lake casual.

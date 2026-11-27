@@ -46,7 +46,10 @@ function ratesDialog(h) {
 }
 
 export default function stay(W) {
-  const cards = W.hotels
+  // A hotel with listed:false stays in the data but off this page.
+  const listed = W.hotels.filter((h) => h.listed !== false);
+
+  const cards = listed
     .map((h) => {
       const photos = [{ src: h.photo, alt: h.photoAlt }].concat(h.gallery || []).filter((p) => p.src);
       // Somewhere we don't have our own photo of yet: a quiet panel keeps the
@@ -126,7 +129,7 @@ export default function stay(W) {
       <div class="hotel-grid">${cards}
       </div>
       <p class="placeholder-note">PLACEHOLDER · room-block codes and final booking links</p>
-      ${W.hotels.filter((h) => h.rooms && h.rooms.length).map(ratesDialog).join("")}
+      ${listed.filter((h) => h.rooms && h.rooms.length).map(ratesDialog).join("")}
     </div>
   </section>
 
@@ -135,6 +138,7 @@ export default function stay(W) {
       <div>
         <h2>Where should I actually stay?</h2>
         <p>In Schliersee village or right on the lake. Everywhere we've listed sits within a five minute walk of everywhere else, which is where we'll be hanging out between events, and where the shuttles pick up.</p>
+        <p>We'll be at the Terofal in the middle of the village with some of the family. It isn't on the list above, but the wedding-day shuttles leave from right outside it.</p>
       </div>
     </div>
   </section>
@@ -143,7 +147,7 @@ export default function stay(W) {
   return {
     route: "/stay/",
     title: "Stay · Amanda & Nik",
-    desc: "Where to sleep in Schliersee: the Seehotel on the lake, the Terofal in the village, and apartments around the water.",
+    desc: "Where to sleep in Schliersee: the Seehotel on the lake, apartments and hotels in the village, and places around the water.",
     current: "stay",
     body,
     scripts: ["scripts/stay.js"]

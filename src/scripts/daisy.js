@@ -25,7 +25,7 @@ function fallback(question) {
   if (/get here|travel|train|airport|munich|muc|drive/.test(s))
     return "Fly into Munich (MUC), then it's about an hour to Schliersee on the Bayerische Oberlandbahn from München Hbf, or by car. Everything is on [the Travel page](/travel/), including step-free options.";
   if (/stay|hotel|room|book/.test(s))
-    return "Seehotel Schlierseer Hof is right on the lake, Terofal is in the village, and there are apartments nearby. Many places want a 2 to 3 night minimum in June, so book early. See [the Stay page](/stay/).";
+    return "Seehotel Schlierseer Hof is right on the lake, and there are hotels and apartments in the village too. Many places want a 2 to 3 night minimum in June, so book early. See [the Stay page](/stay/).";
   if (/when|date|time|schedule/.test(s))
     return "The wedding is Thursday 17 June 2027 at Stögeralm, with the welcome party the night before on Wednesday 16 June. Day-by-day times are on [the Schedule page](/schedule/).";
   return "I'm a dog, so my knowledge has limits, but [the FAQ page](/faq/) covers passports, cash, weather and the rain plan. Anything else, ask Amanda or Nik directly.";
