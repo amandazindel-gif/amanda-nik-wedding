@@ -54,6 +54,18 @@ export default function guests(W) {
         <p class="guest-table__none" data-guest-none hidden>No one matches that.</p>
       </div>
 
+      <div class="guests-empty" data-guest-lock hidden>
+        <p class="guests-empty__eyebrow">Guests only</p>
+        <h2>What's the password?</h2>
+        <p>We keep everyone's number behind a password so it isn't sitting on the open web. It's on your invitation, and Amanda or Nik will happily tell you again.</p>
+        <form class="guest-lock" data-guest-lock-form>
+          <label class="visually-hidden" for="guest-pass">Password</label>
+          <input id="guest-pass" type="password" autocomplete="current-password" placeholder="Password" data-guest-pass>
+          <button type="submit" class="btn btn--primary">Unlock</button>
+        </form>
+        <p class="guest-lock__error" data-guest-lock-error hidden>That's not it. Try again, or ask Amanda or Nik.</p>
+      </div>
+
       <div class="guests-empty" data-guest-loading ${seed.length ? "hidden" : ""}>
         <p class="guests-empty__eyebrow">One moment</p>
         <h2>Fetching the list…</h2>

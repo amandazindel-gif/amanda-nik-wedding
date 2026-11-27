@@ -161,9 +161,31 @@ This is deliberate: pasting guests' phone numbers into `wedding-data.js` would
 commit them to a public repo forever, git history included. Keeping them in the
 sheet means you can correct or remove someone and the page follows.
 
-What that page shows is **public to anyone with the URL**, which is what a
-shared contact list is for, but it's why the opt-in checkbox exists and why
-nobody is listed without ticking it.
+### The passphrase
+
+The directory is **behind a passphrase**, and the lock is on the Apps Script,
+not on the page. That matters: the script URL appears in the page source, so a
+password on the page alone would stop nobody. Without the passphrase the script
+returns `{locked:true}` and no guest data at all.
+
+Set it in **Apps Script → Project Settings (the cog) → Script properties**:
+
+| Property | Value |
+|---|---|
+| `DIRECTORY_PASSPHRASE` | whatever word you tell your guests |
+
+It is deliberately **not** in this repository, which is public. The website
+never knows it either — a guest types it, and their browser remembers it so
+they only do that once. Case and spaces are ignored.
+
+**If the property is not set, the directory stays locked for everyone.** That
+is the safe default: a missing passphrase must not mean open access.
+
+To change it later, edit the property. Guests whose saved passphrase stops
+working are simply asked for it again.
+
+The RSVP name lookup is a separate call and stays open, as it must be for
+guests to find their invitation. It only ever returns names and plus-one info.
 
 On the RSVP, phone and email are asked **per person**, so a couple replying
 together don't end up sharing one number. "Side" is asked once for the party.

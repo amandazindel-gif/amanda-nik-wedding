@@ -14,11 +14,11 @@
  * What it does
  *  GET              → returns ONLY names + plus-one info for the RSVP lookup.
  *                     Phone, address and reception details never leave the sheet.
- *  GET ?directory=1 → returns the "Guest list" tab: name, side, phone and email
- *                     for the rows marked "Show on website". This feeds the
- *                     Guests page. Anyone who can open the website can read it,
- *                     which is the point of a shared contact list, but it is
- *                     why only opted-in guests are ever included.
+ *  GET ?directory=1&key=… → returns the "Guest list" tab: name, side, phone and
+ *                     email for the rows marked "Show on website". Requires
+ *                     DIRECTORY_PASSPHRASE below; without it this returns
+ *                     {locked:true} and no guest data. Only opted-in guests are
+ *                     ever included even with the passphrase.
  *  POST             → appends one row per guest to the "RSVPs" tab (the full
  *                     log) and updates that guest's row on "Guest list".
  *                     Both tabs are created automatically.
@@ -37,6 +37,24 @@
 const GUEST_TAB_GID = 1473395423;   // the tab from your link (#gid=...)
 const RSVP_TAB_NAME = "RSVPs";
 const DIRECTORY_TAB_NAME = "Guest list";
+
+/**
+ * Passphrase guests type to see the contact list. Without it this script will
+ * not hand the directory to anyone, so the phone numbers and emails are not
+ * readable just by finding this URL.
+ *
+ * SET IT HERE, NOT IN THIS FILE: Apps Script → Project Settings (the cog) →
+ * Script properties → Add script property
+ *      Property: DIRECTORY_PASSPHRASE
+ *      Value:    whatever word you tell your guests
+ * It is kept out of this file on purpose, because this file lives in a public
+ * repository. Case and spaces are ignored when guests type it.
+ *
+ * Until the property is set, the directory stays locked for everyone.
+ */
+function directoryPassphrase_() {
+  return PropertiesService.getScriptProperties().getProperty("DIRECTORY_PASSPHRASE") || "";
+}
 
 function guestSheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -86,8 +104,16 @@ function rsvpSheet_() {
   return sh;
 }
 
+const tidy_ = (s) => String(s == null ? "" : s).trim().toLowerCase().replace(/\s+/g, "");
+
 function doGet(e) {
-  if (e && e.parameter && e.parameter.directory) return directory_();
+  if (e && e.parameter && e.parameter.directory) {
+    // No passphrase, no directory, and nothing leaks about why. If the script
+    // property has not been set yet, nobody gets in: locked is the safe state.
+    var expected = tidy_(directoryPassphrase_());
+    if (!expected || tidy_(e.parameter.key) !== expected) return jsonOut_({ locked: true });
+    return directory_();
+  }
   const sheet = guestSheet_();
   const all = sheet.getDataRange().getValues();
   const hr = headerRow_(all);
