@@ -19,6 +19,14 @@ export const wedding = {
      See server/daisy-worker.js. Never put an API key in this file. */
   daisyEndpoint: "",
 
+  /* Shown on the RSVP confirmation to guests who opted into the directory, so
+     they have the password for the Guests page. It must match the
+     DIRECTORY_PASSPHRASE script property in the Apps Script.
+     Note: this ships in the site, so anyone reading the page source can find
+     it. It keeps the list off search engines and away from casual visitors
+     rather than making it genuinely secret. Leave empty to show no code. */
+  guestListCode: "treece2027",
+
   /* ============================================================
      GUEST LIST — PLACEHOLDER DATA. Replace from your spreadsheet.
      One entry per invited party (household). The RSVP page looks up

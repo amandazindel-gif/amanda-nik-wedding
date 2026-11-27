@@ -2569,3 +2569,35 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
 }
 .rsvp-summary strong { font-weight: 700; }
 .rsvp-done__actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.rsvp-code {
+  max-width: 420px;
+  margin: 0 auto 20px;
+  padding: 16px 18px;
+  border-radius: var(--r-sm);
+  background: var(--sage-1);
+  border: 1px solid var(--line-16);
+}
+.rsvp-code__label {
+  margin: 0 0 6px !important;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--forest);
+}
+.rsvp-code__value {
+  margin: 0 0 8px !important;
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  word-break: break-all;
+}
+.rsvp-code__note {
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.55;
+  color: var(--muted);
+}

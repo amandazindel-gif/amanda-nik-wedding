@@ -14,21 +14,24 @@
  * What it does
  *  GET              → returns ONLY names + plus-one info for the RSVP lookup.
  *                     Phone, address and reception details never leave the sheet.
- *  GET ?directory=1&key=… → returns the "Guest list" tab: name, side, phone and
+ *  GET ?directory=1&key=… → returns the "Website guest list" tab: name, side, phone and
  *                     email for the rows marked "Show on website". Requires
  *                     DIRECTORY_PASSPHRASE below; without it this returns
  *                     {locked:true} and no guest data. Only opted-in guests are
  *                     ever included even with the passphrase.
  *  POST             → appends one row per guest to the "RSVPs" tab (the full
- *                     log) and updates that guest's row on "Guest list".
+ *                     log) and updates that guest's row on "Website guest list".
  *                     Both tabs are created automatically.
  *
  * Tabs this script owns
  *  RSVPs       every reply as it came in, one row per guest. Never edited.
- *  Guest list  the shared contact list, one row per person. Safe to edit:
+ *  Website guest list
+ *              the shared contact list, one row per person. Safe to edit:
  *              tidy a number, or set "Show on website" to No to hide someone
  *              (that holds until they RSVP again, since their own choice wins).
  *              Sheet menu → Wedding site → Rebuild guest list from RSVPs.
+ *              Named "Website guest list" so it does not collide with the
+ *              planner template's own "Guest list" tab.
  *
  * Parties: guests who share the same address are grouped into one invitation,
  * so one person can RSVP for their whole household.
@@ -36,7 +39,9 @@
 
 const GUEST_TAB_GID = 1473395423;   // the tab from your link (#gid=...)
 const RSVP_TAB_NAME = "RSVPs";
-const DIRECTORY_TAB_NAME = "Guest list";
+/* Named so it cannot collide with a tab the wedding planner template already
+   has. "Guest list" is one of those, and this script quietly wrote into it. */
+const DIRECTORY_TAB_NAME = "Website guest list";
 
 /**
  * Passphrase guests type to see the contact list. Without it this script will
@@ -153,7 +158,7 @@ function doGet(e) {
 }
 
 /* ===========================================================================
-   THE "Guest list" TAB
+   THE "Website guest list" TAB
    The shared contact list the website shows. The script keeps it up to date as
    RSVPs arrive, and you can edit it by hand: fix a typo, tidy a phone number,
    or set "Show on website" to No to hide someone without deleting them.
@@ -348,7 +353,7 @@ function doPost(e) {
       sh.appendRow(headers.map(h => (h in values ? values[h] : "")));
     });
 
-    // Keep the "Guest list" tab, and so the website, in step with this reply.
+    // Keep the "Website guest list" tab, and so the website, in step.
     upsertDirectory_((d.guests || [])
       .filter(g => String(g.name || "").trim())
       .map(g => ({

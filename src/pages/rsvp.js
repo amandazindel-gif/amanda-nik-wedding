@@ -86,6 +86,15 @@ export default function rsvp(W) {
         <h1 data-confirm-headline>See you in the Alps.</h1>
         <p>Daisy has filed your reply under "important". More details will be added as we get closer.</p>
         <div class="rsvp-summary" data-summary></div>
+        ${
+          W.guestListCode
+            ? `<div class="rsvp-code" data-guest-code hidden>
+          <p class="rsvp-code__label">Use this code when accessing the guest list</p>
+          <p class="rsvp-code__value">${esc(W.guestListCode)}</p>
+          <p class="rsvp-code__note">It unlocks the <a href="${url("/guests/")}">Guests page</a>, where everyone who opted in shares their contact details.</p>
+        </div>`
+            : ""
+        }
         <div class="rsvp-done__actions">
           <a class="btn btn--forest" href="${url("/stay/")}">Find a room</a>
           <button type="button" class="btn btn--outline" data-reset>Reply for someone else</button>

@@ -378,6 +378,10 @@ function renderConfirmation(payload) {
       : "See you in the Alps."
     : "Thank you for telling us.";
 
+  // The directory password is only useful to people who joined the directory.
+  const codeBox = $("[data-guest-code]");
+  if (codeBox) codeBox.hidden = !payload.shareContact;
+
   const summary = $("[data-summary]");
   summary.innerHTML = "";
   payload.guests.forEach((g) => {

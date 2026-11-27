@@ -57,7 +57,7 @@ export default function guests(W) {
       <div class="guests-empty" data-guest-lock hidden>
         <p class="guests-empty__eyebrow">Guests only</p>
         <h2>What's the password?</h2>
-        <p>We keep everyone's number behind a password so it isn't sitting on the open web. It's on your invitation, and Amanda or Nik will happily tell you again.</p>
+        <p>We want to keep everyone's information private, so please enter the password provided to you when you RSVP'd.</p>
         <form class="guest-lock" data-guest-lock-form>
           <label class="visually-hidden" for="guest-pass">Password</label>
           <input id="guest-pass" type="password" autocomplete="current-password" placeholder="Password" data-guest-pass>
