@@ -9,7 +9,7 @@
 
 export const wedding = {
   weddingISO: "2027-06-17T15:00:00+02:00",     /* PLACEHOLDER · ceremony start */
-  rsvpDeadline: "December 31, 2026",
+  rsvpDeadline: "January 31, 2027",
   contactEmail: "hello@amandaandnik.com",      /* PLACEHOLDER · contact address */
 
   /* Google Sheet connector: paste the Apps Script Web app URL (ends in /exec). Empty = use the invitees list below. */
