@@ -78,7 +78,7 @@ ${hostsBlock}
       <div class="guests-empty" data-guest-lock hidden>
         <p class="guests-empty__eyebrow">Guests only</p>
         <h2>What's the password?</h2>
-        <p>We want to keep everyone's information private, so please enter the password provided to you when you RSVP'd.</p>
+        <p>We want to keep everyone's information private from the public, so please enter the password provided to you when you RSVP'd. If you don't remember the code, go back to <a href="${url("/rsvp/")}">RSVP</a> and search your name. The passcode will be listed there again.</p>
         <form class="guest-lock" data-guest-lock-form>
           <label class="visually-hidden" for="guest-pass">Password</label>
           <input id="guest-pass" type="password" autocomplete="current-password" placeholder="Password" data-guest-pass>
