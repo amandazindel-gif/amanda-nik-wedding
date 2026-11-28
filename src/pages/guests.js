@@ -15,6 +15,29 @@ export function guestRow(g) {
 
 export default function guests(W) {
   const seed = W.guests || [];
+  const hosts = W.hosts || [];
+  const tel = (p) => String(p).replace(/[^+0-9]/g, "");
+
+  /* Our own details sit outside the password gate on purpose: a guest who
+     hasn't got the password still needs a way to ask one of us for it. */
+  const hostsBlock = hosts.length
+    ? `
+      <div class="hosts-card">
+        <p class="hosts-card__title">Us, if you need anything</p>
+        <ul class="hosts-card__list">${hosts
+          .map(
+            (h) => `
+          <li class="hosts-card__person">
+            <span class="hosts-card__name">${esc(h.name)}</span>
+            ${h.phone ? `<a href="tel:${esc(tel(h.phone))}">${esc(h.phone)}</a>` : ""}
+            ${h.email ? `<a href="mailto:${esc(h.email)}">${esc(h.email)}</a>` : ""}
+          </li>`
+          )
+          .join("")}
+        </ul>
+      </div>
+`
+    : "";
 
   const body = `
 <main>
@@ -25,7 +48,7 @@ export default function guests(W) {
         <h1>The little black book</h1>
         <p style="max-width:54ch;color:var(--nav-link);text-wrap:pretty">A shared contact list, so you can round people up for breakfast, split a taxi from the station, or find out who else is on your flight.</p>
       </div>
-
+${hostsBlock}
       <div class="guest-table-wrap" data-guest-table ${seed.length ? "" : "hidden"}>
         <div class="guest-table__bar">
           <p class="result-count" data-guest-count aria-live="polite" style="margin:0">${

@@ -2142,6 +2142,52 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
   color: var(--nav-link);
   text-wrap: pretty;
 }
+/* Our own contact details sit above the directory and outside the password
+   gate, so a guest who hasn't got the password can still reach us. */
+.hosts-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 26px;
+  margin-bottom: 18px;
+  padding: 16px 20px;
+  border: 1px solid var(--line-14);
+  border-radius: var(--r-bubble);
+  background: var(--warm-3);
+}
+.hosts-card__title {
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+.hosts-card__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hosts-card__person {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 14px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--nav-link);
+}
+.hosts-card__name {
+  font-weight: 600;
+  color: var(--ink);
+}
+.hosts-card__person a { color: var(--nav-link); }
+.hosts-card__person a:hover { color: var(--terracotta); }
+
 /* The directory reads as a spreadsheet: one row per guest, sortable,
    filterable, and scrollable sideways when the screen is too narrow. */
 .guest-table-wrap {

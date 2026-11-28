@@ -213,6 +213,14 @@ export const wedding = {
      { name: "Jane Doe", phone: "+1 303 555 0134", email: "jane@example.com" } */
   guests: [],
 
+  /* Shown at the top of the Guests page, above the directory. Unlike the
+     directory this is not behind the password, so a guest who hasn't got it
+     can still reach you. Remove an entry to drop it from the page. */
+  hosts: [
+    { name: "Amanda", phone: "+1 630 303 4619", email: "amandazindel@gmail.com" },
+    { name: "Nik", phone: "+1 303 902 7259", email: "niktreece@yahoo.com" }
+  ],
+
   faqs: [
     { cat: "Logistics", q: "Is my passport OK?", a: "It needs to be valid for at least three months after you leave the EU, and issued within the last ten years. Check early!" },
     { cat: "Logistics", q: "Cash or card?", a: "Many places will accept credit cards, but there are still some restaurants, cafés, etc. that prefer cash. Bring a couple of hundred euros, or take some out at the ATM in town." },
