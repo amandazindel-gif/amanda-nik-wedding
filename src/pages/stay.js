@@ -128,7 +128,6 @@ export default function stay(W) {
       </div>
       <div class="hotel-grid">${cards}
       </div>
-      <p class="placeholder-note">PLACEHOLDER · room-block codes and final booking links</p>
       ${listed.filter((h) => h.rooms && h.rooms.length).map(ratesDialog).join("")}
     </div>
   </section>

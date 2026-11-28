@@ -246,7 +246,6 @@ replies have any em or en dashes stripped, and markdown links like
 - [ ] **Tracht shop and rental links** on `/wear/`. The card shows
       "More info coming soon!" until `links` on the tracht dress code has
       entries; add them and the note is replaced by buttons automatically.
-- [ ] **Room-block codes and final booking links** on `/stay/`.
 - [ ] **Redeploy the Apps Script** with the current `server/rsvp-apps-script.gs`
       (Deploy → Manage deployments → edit → New version). Until you do, the
       Guests page stays on "coming soon" and a guest who has already replied is
