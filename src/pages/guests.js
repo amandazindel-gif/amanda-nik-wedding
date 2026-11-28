@@ -8,7 +8,6 @@ export function guestRow(g) {
   return `
             <tr>
               <th scope="row">${esc(g.name)}</th>
-              <td>${esc(g.side || "")}</td>
               <td>${g.phone ? `<a href="tel:${esc(String(g.phone).replace(/[^+0-9]/g, ""))}">${esc(g.phone)}</a>` : ""}</td>
               <td>${g.email ? `<a href="mailto:${esc(g.email)}">${esc(g.email)}</a>` : ""}</td>
             </tr>`;
@@ -42,7 +41,6 @@ export default function guests(W) {
             <thead>
               <tr>
                 <th scope="col"><button type="button" data-sort="name" aria-label="Sort by name">Name</button></th>
-                <th scope="col"><button type="button" data-sort="side" aria-label="Sort by side">Side</button></th>
                 <th scope="col">Phone</th>
                 <th scope="col">Email</th>
               </tr>

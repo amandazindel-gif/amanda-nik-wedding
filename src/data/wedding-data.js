@@ -210,7 +210,7 @@ export const wedding = {
      details stay in the spreadsheet and never get committed to this repo.
      Anything listed here is rendered as a seed and replaced once that fetch
      lands; it is only useful for a guest who can't use the RSVP form.
-     { name: "Jane Doe", side: "Amanda's side", phone: "+1 303 555 0134", email: "jane@example.com" } */
+     { name: "Jane Doe", phone: "+1 303 555 0134", email: "jane@example.com" } */
   guests: [],
 
   faqs: [

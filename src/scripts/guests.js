@@ -61,7 +61,7 @@ function cell(text, href) {
 function render() {
   const q = ((filterInput && filterInput.value) || "").trim().toLowerCase();
   const rows = all
-    .filter((g) => !q || (g.name + " " + (g.side || "")).toLowerCase().includes(q))
+    .filter((g) => !q || g.name.toLowerCase().includes(q))
     .sort((a, b) => String(a[sortKey] || "").localeCompare(String(b[sortKey] || "")) * sortDir);
 
   tbody.textContent = "";
@@ -71,7 +71,6 @@ function render() {
     th.scope = "row";
     th.textContent = g.name;
     tr.appendChild(th);
-    tr.appendChild(cell(g.side));
     tr.appendChild(cell(g.phone, g.phone ? "tel:" + String(g.phone).replace(/[^+0-9]/g, "") : null));
     tr.appendChild(cell(g.email, g.email ? "mailto:" + g.email : null));
     tbody.appendChild(tr);

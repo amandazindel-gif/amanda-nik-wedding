@@ -14,8 +14,8 @@
  * What it does
  *  GET              → returns ONLY names + plus-one info for the RSVP lookup.
  *                     Phone, address and reception details never leave the sheet.
- *  GET ?directory=1&key=… → returns the "Website guest list" tab: name, side, phone and
- *                     email for the rows marked "Show on website". Requires
+ *  GET ?directory=1&key=… → returns the "Website guest list" tab: name, phone
+ *                     and email for the rows marked "Show on website". Requires
  *                     DIRECTORY_PASSPHRASE below; without it this returns
  *                     {locked:true} and no guest data. Only opted-in guests are
  *                     ever included even with the passphrase.
@@ -171,7 +171,22 @@ function doGet(e) {
    It is what the website reads, so your edits are what guests see.
    A guest who RSVPs again overwrites their own row, nothing else.
    =========================================================================== */
-const DIRECTORY_HEADERS = ["Name", "Side", "Phone", "Email", "Show on website", "Updated"];
+const DIRECTORY_HEADERS = ["Name", "Phone", "Email", "Show on website", "Updated"];
+
+/* Where each column actually is on the tab right now. Everything below works
+   through this rather than fixed positions, so moving a column, or deleting
+   one the site no longer uses, cannot shift data into the wrong place. */
+function directoryColumns_(sh) {
+  const headers = sh.getRange(1, 1, 1, Math.max(1, sh.getLastColumn())).getValues()[0];
+  return {
+    width: Math.max(headers.length, DIRECTORY_HEADERS.length),
+    name: col_(headers, ["name"]),
+    phone: col_(headers, ["phone"]),
+    email: col_(headers, ["email"]),
+    show: col_(headers, ["showonwebsite", "show"]),
+    updated: col_(headers, ["updated"])
+  };
+}
 
 function directorySheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -192,22 +207,37 @@ function directorySheet_() {
 
 /**
  * Add or update one row per guest, matched on name.
- * entries: [{ name, side, phone, email, show }]
+ * entries: [{ name, phone, email, show }]
  */
 function upsertDirectory_(entries) {
   if (!entries.length) return 0;
   const sh = directorySheet_();
+  const c = directoryColumns_(sh);
+  if (c.name < 0) return 0;
+
   const last = sh.getLastRow();
-  const width = DIRECTORY_HEADERS.length;
-  const rows = last > 1 ? sh.getRange(2, 1, last - 1, width).getValues() : [];
+  const rows = last > 1 ? sh.getRange(2, 1, last - 1, c.width).getValues() : [];
 
   const index = {};
   rows.forEach((r, i) => {
-    const k = String(r[0] || "").trim().toLowerCase();
+    const k = String(r[c.name] || "").trim().toLowerCase();
     if (k) index[k] = i;
   });
 
   const now = new Date();
+
+  // Only overwrite what the guest actually sent. Someone re-replying to change
+  // a meal shouldn't wipe the number they gave us last time.
+  const fill = (row, e) => {
+    if (c.phone >= 0 && e.phone) row[c.phone] = e.phone;
+    if (c.email >= 0 && e.email) row[c.email] = e.email;
+    // The guest's own latest choice decides this, so opting out and back in
+    // works. A No you set by hand holds until that guest replies again.
+    if (c.show >= 0) row[c.show] = e.show ? "Yes" : "No";
+    if (c.updated >= 0) row[c.updated] = now;
+    return row;
+  };
+
   const appends = [];
   entries.forEach(e => {
     const name = String(e.name || "").trim();
@@ -215,23 +245,16 @@ function upsertDirectory_(entries) {
     if (!key) return;
 
     if (key in index) {
-      const r = rows[index[key]];
-      // Only overwrite what the guest actually sent. Someone re-replying to
-      // change a meal shouldn't wipe the number they gave us last time.
-      if (e.side) r[1] = e.side;
-      if (e.phone) r[2] = e.phone;
-      if (e.email) r[3] = e.email;
-      // The guest's own latest choice decides this, so opting out and back in
-      // works. A No you set by hand holds until that guest replies again.
-      r[4] = e.show ? "Yes" : "No";
-      r[5] = now;
+      fill(rows[index[key]], e);
     } else {
-      appends.push([name, e.side || "", e.phone || "", e.email || "", e.show ? "Yes" : "No", now]);
+      const row = new Array(c.width).fill("");
+      row[c.name] = name;
+      appends.push(fill(row, e));
     }
   });
 
-  if (rows.length) sh.getRange(2, 1, rows.length, width).setValues(rows);
-  if (appends.length) sh.getRange(sh.getLastRow() + 1, 1, appends.length, width).setValues(appends);
+  if (rows.length) sh.getRange(2, 1, rows.length, c.width).setValues(rows);
+  if (appends.length) sh.getRange(sh.getLastRow() + 1, 1, appends.length, c.width).setValues(appends);
   return entries.length;
 }
 
@@ -246,7 +269,6 @@ function latestFromRsvps_() {
     when: col_(headers, ["submitted"]),
     name: col_(headers, ["guest"]),
     share: col_(headers, ["addtoguestlist"]),
-    side: col_(headers, ["side"]),
     phone: col_(headers, ["phone"]),
     email: col_(headers, ["email"])
   };
@@ -263,7 +285,6 @@ function latestFromRsvps_() {
       when: when,
       entry: {
         name: name,
-        side: c.side >= 0 ? String(r[c.side] || "").trim() : "",
         phone: c.phone >= 0 ? String(r[c.phone] || "").trim() : "",
         email: c.email >= 0 ? String(r[c.email] || "").trim() : "",
         show: c.share >= 0 ? YES.test(String(r[c.share] || "").trim()) : false
@@ -283,7 +304,6 @@ function directory_() {
   const headers = all[0];
   const c = {
     name: col_(headers, ["name"]),
-    side: col_(headers, ["side"]),
     phone: col_(headers, ["phone"]),
     email: col_(headers, ["email"]),
     show: col_(headers, ["showonwebsite", "show"])
@@ -294,7 +314,6 @@ function directory_() {
     .filter(r => c.show < 0 || YES.test(String(r[c.show] || "").trim()))
     .map(r => ({
       name: String(r[c.name] || "").trim(),
-      side: c.side >= 0 ? String(r[c.side] || "").trim() : "",
       phone: c.phone >= 0 ? String(r[c.phone] || "").trim() : "",
       email: c.email >= 0 ? String(r[c.email] || "").trim() : ""
     }))
@@ -362,7 +381,7 @@ function doPost(e) {
         "meal": g.meal || "",
         "dietary": g.dietary || "",
         "add to guest list": d.shareContact ? "Yes" : "No",
-        "side": d.side || "",
+        "side": d.side || "",   // the form no longer asks; older rows keep theirs
         "phone": g.phone || d.phone || "",
         "email": g.email || d.email || "",
         "song request": d.song || "",
@@ -376,7 +395,6 @@ function doPost(e) {
       .filter(g => String(g.name || "").trim())
       .map(g => ({
         name: g.name,
-        side: d.side || "",
         phone: g.phone || d.phone || "",
         email: g.email || d.email || "",
         show: !!d.shareContact && (g.welcomeParty || g.weddingDay)
