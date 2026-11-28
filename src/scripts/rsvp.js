@@ -305,6 +305,11 @@ function showAlready(party) {
   }
 
   renderSummary($("[data-already-summary]"), reply.guests || []);
+
+  // Only useful to someone who joined the directory, same as after a new reply.
+  const codeBox = $("[data-already-code]");
+  if (codeBox) codeBox.hidden = !reply.shareContact;
+
   const change = $("[data-already-change]");
   if (change) change.onclick = () => openParty(party, { force: true });
   show("already");

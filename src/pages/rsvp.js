@@ -1,6 +1,18 @@
 import { esc, url, asset } from "../components/util.js";
 
 export default function rsvp(W) {
+  /* The guest-list code. Shown to anyone who opted in, on both end screens:
+     coming back for the code they didn't write down is exactly why someone
+     looks themselves up a second time. */
+  const codePanel = (hook) =>
+    W.guestListCode
+      ? `<div class="rsvp-code" ${hook} hidden>
+          <p class="rsvp-code__label">Use this code when accessing the guest list</p>
+          <p class="rsvp-code__value">${esc(W.guestListCode)}</p>
+          <p class="rsvp-code__note">It unlocks the <a href="${url("/guests/")}">Guests page</a>, where everyone who opted in shares their contact details.</p>
+        </div>`
+      : "";
+
   const body = `
 <main style="padding:44px 16px 70px">
   <div class="rsvp">
@@ -85,6 +97,7 @@ export default function rsvp(W) {
         <h1>You've already replied.</h1>
         <p data-already-when>Here's what you told us.</p>
         <div class="rsvp-summary" data-already-summary></div>
+        ${codePanel("data-already-code")}
         <p class="rsvp-already__note">Changed your mind, or need to fix something? Reply again and we'll go by your newest answer.</p>
         <div class="rsvp-done__actions">
           <button type="button" class="btn btn--forest" data-already-change>Change your reply</button>
@@ -93,7 +106,7 @@ export default function rsvp(W) {
       </div>
     </div>
 
-    <!-- Stage 3 · confirmation -->
+    <!-- Stage 4 · confirmation -->
     <div class="rsvp-stage" data-stage="done" hidden>
       <div class="rsvp-card rsvp-done">
         <img src="${asset("assets/daisy-line.png")}" alt="Line drawing of Daisy the dog, grinning" width="170" height="170">
@@ -101,15 +114,7 @@ export default function rsvp(W) {
         <h1 data-confirm-headline>See you in the Alps.</h1>
         <p>Daisy has filed your reply under "important". More details will be added as we get closer.</p>
         <div class="rsvp-summary" data-summary></div>
-        ${
-          W.guestListCode
-            ? `<div class="rsvp-code" data-guest-code hidden>
-          <p class="rsvp-code__label">Use this code when accessing the guest list</p>
-          <p class="rsvp-code__value">${esc(W.guestListCode)}</p>
-          <p class="rsvp-code__note">It unlocks the <a href="${url("/guests/")}">Guests page</a>, where everyone who opted in shares their contact details.</p>
-        </div>`
-            : ""
-        }
+        ${codePanel("data-guest-code")}
         <div class="rsvp-done__actions">
           <a class="btn btn--forest" href="${url("/stay/")}">Find a room</a>
           <button type="button" class="btn btn--outline" data-reset>Reply for someone else</button>
