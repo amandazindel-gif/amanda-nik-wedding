@@ -104,12 +104,17 @@ BASE_URL=/amanda-nik-wedding/ npm run build
 ## The RSVP
 
 1. A guest types their first and last name on `/rsvp/`.
-2. The page `GET`s the Apps Script URL, which returns **names and plus-one info
-   only** — no phone numbers or addresses leave the sheet.
+2. The page `GET`s the Apps Script URL, which returns **names, plus-one info
+   and each invitation's latest reply** — attendance, meal and dietary notes.
+   No phone numbers, emails, song requests, notes or addresses leave the sheet;
+   those stay behind the directory passphrase.
 3. Names are matched case- and accent-insensitively against each party's
    members, nicknames (`also`) and named plus-one. One match opens that whole
    party; several offer a "did you mean" list; none offers a manual reply.
-4. Submitting `POST`s one JSON payload; the script appends one row per guest to
+4. An invitation that has already replied lands on a "you've already replied"
+   screen showing what they chose. **Change your reply** opens the form
+   prefilled with those answers; the newest reply is the one that counts.
+5. Submitting `POST`s one JSON payload; the script appends one row per guest to
    a tab called **RSVPs**, creating it if needed.
 
 The server side is [`server/rsvp-apps-script.gs`](server/rsvp-apps-script.gs).
@@ -243,8 +248,9 @@ replies have any em or en dashes stripped, and markdown links like
       entries; add them and the note is replaced by buttons automatically.
 - [ ] **Room-block codes and final booking links** on `/stay/`.
 - [ ] **Redeploy the Apps Script** with the current `server/rsvp-apps-script.gs`
-      (Deploy → Manage deployments → edit → New version). The Guests page stays
-      on "coming soon" until you do.
+      (Deploy → Manage deployments → edit → New version). Until you do, the
+      Guests page stays on "coming soon" and a guest who has already replied is
+      sent back to a blank form instead of their answers.
 - [ ] **Send one test RSVP** (see above), with the guest-list box ticked, and
       confirm the person appears on `/guests/`. Then delete the row.
 - [ ] Decide whether to deploy the Daisy proxy.

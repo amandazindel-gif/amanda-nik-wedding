@@ -16,12 +16,22 @@ const norm = (s) =>
     .replace(/\s+/g, " ")
     .trim();
 
+/* Values go into markup, so a name like O'Brien or 'Tom & Jo' has to survive
+   the trip. */
+const attr = (s) =>
+  String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
 const stages = {
   lookup: $('[data-stage="lookup"]'),
   form: $('[data-stage="form"]'),
+  already: $('[data-stage="already"]'),
   done: $('[data-stage="done"]')
 };
 
@@ -101,28 +111,30 @@ function blankPerson(name, opts = {}) {
 
 function personCard(p, i) {
   const heading = p.name || (p.isPlusOne ? "Your plus one" : "Guest");
-  const mealOptions = MEALS.map((m) => `<option value="${m.id}">${m.label}</option>`).join("");
+  const mealOptions = MEALS.map(
+    (m) => `<option value="${attr(m.id)}"${m.id === p.meal ? " selected" : ""}>${attr(m.label)}</option>`
+  ).join("");
   return `
   <div class="person" data-person="${i}">
     <div class="person__head">
-      <h2 data-person-heading>${heading}</h2>
+      <h2 data-person-heading>${attr(heading)}</h2>
       <span class="person__tag">${p.isPlusOne ? "Plus one" : "On the list"}</span>
     </div>
     ${
       p.needsName
         ? `<label class="field" style="margin-bottom:14px">
              <span>Their name</span>
-             <input type="text" data-field="name" value="${p.name}" placeholder="First and last">
+             <input type="text" data-field="name" value="${attr(p.name)}" placeholder="First and last">
            </label>`
         : ""
     }
     <div class="check-list">
       <label class="check">
-        <input type="checkbox" data-field="welcome" checked>
+        <input type="checkbox" data-field="welcome"${p.welcome ? " checked" : ""}>
         <span><strong>Welcome party</strong>, Wednesday, June 16<small>Tracht, beer, pretzels</small></span>
       </label>
       <label class="check">
-        <input type="checkbox" data-field="wedding" checked>
+        <input type="checkbox" data-field="wedding"${p.wedding ? " checked" : ""}>
         <span><strong>Wedding day</strong>, Thursday, June 17<small>Stögeralm</small></span>
       </label>
     </div>
@@ -133,7 +145,7 @@ function personCard(p, i) {
       </label>
       <label class="field">
         <span>Allergies or dietary needs</span>
-        <input type="text" data-field="diet" placeholder="Nut allergy, gluten free, no pork">
+        <input type="text" data-field="diet" value="${attr(p.diet)}" placeholder="Nut allergy, gluten free, no pork">
       </label>
     </div>
     <p class="person__regrets" data-regrets hidden>Not coming to either. We'll miss you, and we'll drink one for you.</p>
@@ -225,14 +237,77 @@ function renderParty() {
   renderShareContacts();
 }
 
-function openParty(party) {
+/* Last time's answers, laid back over this party's people. Phone and email are
+   deliberately not in the payload, so those start empty; the sheet keeps the
+   numbers we already have unless a guest types new ones. */
+function applyGuestReply(p, g) {
+  p.welcome = !!g.welcomeParty;
+  p.wedding = !!g.weddingDay;
+  if (g.meal && MEALS.some((m) => m.id === g.meal)) p.meal = g.meal;
+  p.diet = g.dietary || "";
+}
+
+function applyReply(people, reply) {
+  const left = (reply.guests || []).slice();
+  const take = (test) => {
+    const i = left.findIndex(test);
+    return i < 0 ? null : left.splice(i, 1)[0];
+  };
+
+  people.forEach((p) => {
+    if (!p.name) return;
+    const g = take((o) => norm(o.name) === norm(p.name));
+    if (g) applyGuestReply(p, g);
+  });
+
+  // A plus one they named last time goes back in the empty slot it came from.
+  people.forEach((p) => {
+    if (p.name || !left.length) return;
+    const g = left.shift();
+    p.name = g.name || "";
+    applyGuestReply(p, g);
+  });
+}
+
+/* An invitation that has already been answered lands on the "you've replied"
+   screen first. The form is still one click away, prefilled with last time's
+   answers, so changing one meal doesn't mean filling it all in again. */
+function openParty(party, opts = {}) {
+  if (party.reply && !opts.force) return showAlready(party);
+
   const members = (party.members || []).slice();
   state.partyId = party.id || null;
   state.people = members.map((m) => blankPerson(m));
   if (party.plusOneName) state.people.push(blankPerson(party.plusOneName, { isPlusOne: true }));
   if (party.plusOneOpen) state.people.push(blankPerson("", { isPlusOne: true, needsName: true }));
+  if (party.reply) applyReply(state.people, party.reply);
+
+  if (shareBox) {
+    shareBox.checked = !!(party.reply && party.reply.shareContact);
+    shareFields.forEach((el) => { el.hidden = !shareBox.checked; });
+  }
+
   renderParty();
   show("form");
+}
+
+function showAlready(party) {
+  state.partyId = party.id || null;
+  const reply = party.reply || { guests: [] };
+
+  const when = reply.when ? new Date(reply.when) : null;
+  const whenLine = $("[data-already-when]");
+  if (whenLine) {
+    whenLine.textContent =
+      when && !isNaN(when.getTime())
+        ? `We got your answer on ${when.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}. Here's what you told us.`
+        : "Here's what you told us.";
+  }
+
+  renderSummary($("[data-already-summary]"), reply.guests || []);
+  const change = $("[data-already-change]");
+  if (change) change.onclick = () => openParty(party, { force: true });
+  show("already");
 }
 
 /* -------------------------------------------------------------- lookup --- */
@@ -338,9 +413,28 @@ rsvpForm.addEventListener("submit", async (e) => {
     })
   };
 
+  // Looking yourself up again in the same visit should show what you just
+  // sent, not the answer the sheet had when the page loaded.
+  const recordReply = () => {
+    const party = list().find((p) => p.id && p.id === payload.partyId);
+    if (!party) return;
+    party.reply = {
+      when: new Date().toISOString(),
+      shareContact: !!payload.shareContact,
+      guests: payload.guests.map((g) => ({
+        name: g.name,
+        welcomeParty: g.welcomeParty,
+        weddingDay: g.weddingDay,
+        meal: g.meal,
+        dietary: g.dietary
+      }))
+    };
+  };
+
   const finish = () => {
     state.sending = false;
     $("[data-send]").textContent = "Send it";
+    recordReply();
     renderConfirmation(payload);
     show("done");
   };
@@ -367,14 +461,49 @@ rsvpForm.addEventListener("submit", async (e) => {
   }
 });
 
-function renderConfirmation(payload) {
+/* One row per person: who, and what they chose. Shared by the "you've already
+   replied" screen and the confirmation after a new reply. */
+function renderSummary(host, guests) {
+  if (!host) return;
   const mealLabel = (id) => (MEALS.find((m) => m.id === id) || {}).label || id || "";
-  const anyYes = payload.guests.some((g) => g.welcomeParty || g.weddingDay);
-  const first = (payload.guests[0] && payload.guests[0].name ? payload.guests[0].name : "").split(" ")[0];
+  host.innerHTML = "";
+  guests.forEach((g) => {
+    const row = document.createElement("div");
+    const name = document.createElement("strong");
+    name.textContent = g.name || "Guest";
+    const line = document.createElement("span");
+    const days = [g.welcomeParty ? "Wed" : null, g.weddingDay ? "Thu" : null].filter(Boolean);
+    line.textContent = days.length
+      ? [days.join(" + "), mealLabel(g.meal), g.dietary].filter(Boolean).join(" · ")
+      : "Can't make it";
+    row.append(name, line);
+    host.appendChild(row);
+  });
+}
 
-  $("[data-confirm-headline]").textContent = anyYes
-    ? first
-      ? `See you in the Alps, ${first}.`
+/* First names, except where two people in one party share one: "Chris and
+   Chris" reads as a bug, so those two get their full names. */
+function firstNames(guests) {
+  const first = (n) => String(n || "").trim().split(/\s+/)[0] || "";
+  return guests
+    .map((g) => (guests.filter((o) => first(o.name) === first(g.name)).length > 1 ? String(g.name).trim() : first(g.name)))
+    .filter(Boolean);
+}
+
+function joinNames(names) {
+  return names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0] || "";
+}
+
+function renderConfirmation(payload) {
+  // Greet everyone who is actually coming, not just whoever the sheet listed
+  // first. Anyone who declined is left out, so a split reply never tells a
+  // guest we'll see them in the Alps.
+  const coming = payload.guests.filter((g) => g.welcomeParty || g.weddingDay);
+  const greeting = joinNames(firstNames(coming));
+
+  $("[data-confirm-headline]").textContent = coming.length
+    ? greeting
+      ? `See you in the Alps, ${greeting}.`
       : "See you in the Alps."
     : "Thank you for telling us.";
 
@@ -382,22 +511,7 @@ function renderConfirmation(payload) {
   const codeBox = $("[data-guest-code]");
   if (codeBox) codeBox.hidden = !payload.shareContact;
 
-  const summary = $("[data-summary]");
-  summary.innerHTML = "";
-  payload.guests.forEach((g) => {
-    const row = document.createElement("div");
-    const name = document.createElement("strong");
-    name.textContent = g.name || "Guest";
-    const line = document.createElement("span");
-    line.textContent =
-      !g.welcomeParty && !g.weddingDay
-        ? "Can't make it"
-        : [g.welcomeParty ? "Wed" : null, g.weddingDay ? "Thu" : null].filter(Boolean).join(" + ") +
-          " · " +
-          mealLabel(g.meal);
-    row.append(name, line);
-    summary.appendChild(row);
-  });
+  renderSummary($("[data-summary]"), payload.guests);
 }
 
 /* --------------------------------------------------------------- reset --- */

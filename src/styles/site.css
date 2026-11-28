@@ -2142,6 +2142,15 @@ input, select, textarea, button { font-family: var(--sans); font-size: 16px; }
   color: var(--nav-link);
   text-wrap: pretty;
 }
+.rsvp-already__note {
+  margin: 18px auto 0;
+  max-width: 46ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--nav-link);
+  text-wrap: pretty;
+}
+
 /* Our own contact details sit above the directory and outside the password
    gate, so a guest who hasn't got the password can still reach us. */
 .hosts-card {

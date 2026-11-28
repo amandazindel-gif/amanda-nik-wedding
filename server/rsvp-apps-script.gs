@@ -155,12 +155,76 @@ function doGet(e) {
   });
 
   const invitees = order.map(k => parties[k]);
+
+  // So the website can tell someone who comes back that they already replied.
+  const replies = repliesByParty_();
+  invitees.forEach(p => { if (replies[p.id]) p.reply = replies[p.id]; });
+
   const out = { invitees };
   if (e && e.parameter && e.parameter.debug) {
     out.debug = { tab: sheet.getName(), tabId: sheet.getSheetId(), headerRow: hr + 1, headers: headers, cols: { first: cFirst, last: cLast, plus: cPlus, address: cAddr }, dataRows: rows.length };
   }
   return ContentService.createTextOutput(JSON.stringify(out))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * The latest reply for each invitation, keyed by invitation id.
+ *
+ * Attendance, meal and dietary notes only. No phone, email, song or notes:
+ * anyone who can reach this endpoint can read what it returns, and those
+ * belong behind the directory passphrase.
+ */
+function repliesByParty_() {
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(RSVP_TAB_NAME);
+  if (!sh || sh.getLastRow() < 2) return {};
+
+  const all = sh.getDataRange().getValues();
+  const headers = all[0];
+  const cParty = col_(headers, ["invitation"]);
+  const cGuest = col_(headers, ["guest"]);
+  if (cParty < 0 || cGuest < 0) return {};
+  const cWhen = col_(headers, ["submitted"]);
+  const cWelcome = col_(headers, ["welcomeparty"]);
+  const cWedding = col_(headers, ["weddingday"]);
+  const cMeal = col_(headers, ["meal"]);
+  const cDiet = col_(headers, ["dietary"]);
+  const cShare = col_(headers, ["addtoguestlist"]);
+
+  const cell = (r, i) => (i >= 0 ? String(r[i] == null ? "" : r[i]).trim() : "");
+  const out = {};
+
+  all.slice(1).forEach(r => {
+    const id = cell(r, cParty);
+    // MANUAL is not an invitation; unrelated people share it.
+    if (!id || id.toUpperCase() === "MANUAL") return;
+
+    const when = cWhen >= 0 ? r[cWhen] : "";
+    // Duck-typed rather than `instanceof Date`, which is false for a Date that
+    // crossed a realm boundary.
+    const isDate = when && typeof when.getTime === "function";
+    const t = isDate ? when.getTime() : (Date.parse(when) || 0);
+
+    // One submission writes a row per guest, all stamped the same moment, so
+    // the newest stamp is the whole of the latest reply. An older row is a
+    // reply they have since replaced.
+    if (!out[id] || t > out[id].t) {
+      out[id] = { t: t, when: isDate ? when.toISOString() : String(when || ""), guests: [] };
+    }
+    if (t < out[id].t) return;
+
+    out[id].shareContact = YES.test(cell(r, cShare));
+    out[id].guests.push({
+      name: cell(r, cGuest),
+      welcomeParty: YES.test(cell(r, cWelcome)),
+      weddingDay: YES.test(cell(r, cWedding)),
+      meal: cell(r, cMeal),
+      dietary: cell(r, cDiet)
+    });
+  });
+
+  Object.keys(out).forEach(k => { delete out[k].t; });
+  return out;
 }
 
 /* ===========================================================================

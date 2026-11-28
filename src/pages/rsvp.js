@@ -78,6 +78,21 @@ export default function rsvp(W) {
       </form>
     </div>
 
+    <!-- Stage 3 · they have replied before -->
+    <div class="rsvp-stage" data-stage="already" hidden>
+      <div class="rsvp-card rsvp-done">
+        <p class="rsvp-done__script">Hello again!</p>
+        <h1>You've already replied.</h1>
+        <p data-already-when>Here's what you told us.</p>
+        <div class="rsvp-summary" data-already-summary></div>
+        <p class="rsvp-already__note">Changed your mind, or need to fix something? Reply again and we'll go by your newest answer.</p>
+        <div class="rsvp-done__actions">
+          <button type="button" class="btn btn--forest" data-already-change>Change your reply</button>
+          <button type="button" class="btn btn--outline" data-reset>Reply for someone else</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Stage 3 · confirmation -->
     <div class="rsvp-stage" data-stage="done" hidden>
       <div class="rsvp-card rsvp-done">
